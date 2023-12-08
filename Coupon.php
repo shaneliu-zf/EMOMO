@@ -9,4 +9,20 @@ class Coupon{
     private $rule; // 100 、 5
     private $discount_mode;  // minus 、 percent
     private $discount;
+
+    public function getRule_mode() {
+        return $this->rule_mode;
+    }
+
+    public function getRule() {
+        return $this->rule;
+    }
+
+    public function getDiscount_mode() {
+        return $this->discount_mode;
+    }
+
+    public function getDiscount() {
+        return $this->discount;
+    }
 }
