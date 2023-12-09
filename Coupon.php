@@ -25,4 +25,20 @@ class Coupon{
     public function getDiscount() {
         return $this->discount;
     }
+
+    public function getCouponID(){
+        return $this->coupon_id;
+    }
+
+    public function getName(){
+        return $this->name;
+    }
+
+    public function getGiftCode(){
+        return $this->gift_code;
+    }
+
+    public function getDate(){
+        return $this->date;
+    }
 }

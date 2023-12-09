@@ -27,7 +27,6 @@ class ShoppingCart {
     }
 
     public function submit() {
-
     }
 
     public function getProductList() {

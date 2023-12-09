@@ -8,6 +8,30 @@ class Order {
     private $arrival_date;
     private $address;
 
+    public function getProductList(){
+        return $this->product_list;
+    }
+
+    public function getCouponList(){
+        return $this->coupon_list;
+    }
+
+    public function getStatus(){
+        return $this->status;
+    }
+    
+    public function getOrderDate(){
+        return $this->order_date;
+    }
+
+    public function getArrivalDate(){
+        return $this->arrival_date;
+    }
+
+    public function getAddress(){
+        return $this->address;
+    }
+
     public function __construct(ShoppingCart $cart) {
         $this->product_list = $cart->getProductList();
         $this->status = 'Pending'; // 訂單狀態預設為待處理
