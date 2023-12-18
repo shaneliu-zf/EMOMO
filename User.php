@@ -8,8 +8,27 @@ class User{
     private $address;
     private $user_type;
 
-    function editProfile($user){
-
+    public function getUser_id(){
+        return $this->user_id;
     }
 
+    public function getName(){
+        return $this->name;
+    }
+
+    public function getEmail(){
+        return $this->email;
+    }
+
+    public function getPassword(){
+        return $this->password;
+    }
+
+    public function getAddress(){
+        return $this->address;
+    }
+
+    public function getUserType(){
+        return $this->user_type;
+    }
 }
