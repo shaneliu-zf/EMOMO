@@ -1,8 +1,9 @@
 <?php
 
 class Staff extends User{
+
     function insertProduct(Product $product){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $id = $product->getProductId();
         $name = $product->getName();
         $price = $product->getPrice();
@@ -13,7 +14,7 @@ class Staff extends User{
         mysqli_close($link); 
     }
     function editProduct(Product $product){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $product_id = $product->getProductId();
         $name = $product->getName();
         $price = $product->getPrice();
@@ -24,14 +25,14 @@ class Staff extends User{
         mysqli_close($link);
     }
     function deleteProduct($product_id){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $sql = "DELETE FROM `ProductList` WHERE `id`= $product_id;";
         // 用mysqli_query方法執行(sql語法)將結果存在變數中
         mysqli_query($link,$sql);
         mysqli_close($link); 
     }
     function insertCoupon(Coupon $coupon){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $coupon_id = $coupon->getCouponID();
         $name = $coupon->getName();
         $giftcode = $coupon->getGiftCode();
@@ -46,7 +47,7 @@ class Staff extends User{
         mysqli_close($link);
     }
     function editCoupon(Coupon $coupon){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $coupon_id = $coupon->getCouponID();
         $name = $coupon->getName();
         $giftcode = $coupon->getGiftCode();
@@ -61,7 +62,7 @@ class Staff extends User{
         mysqli_close($link);
     }
     function deleteCoupon($coupon_id){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $sql = "DELETE FROM `CouponList` WHERE `id`= $coupon_id;";
         // 用mysqli_query方法執行(sql語法)將結果存在變數中
         mysqli_query($link,$sql);
@@ -69,21 +70,22 @@ class Staff extends User{
     }
 
     function editOrder(Order $order){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
+        $order_id = $order->getOrderId();
         $product_list = $order->getProductList();
         $coupon_list = $order->getCouponList();
         $status = $order->getStatus();
         $order_date = $order->getOrderDate();
         $arrival_date = $order->getArrivalDate();
         $address = $order->getAddress();
-        $sql = "UPDATE  `OrderList` SET `product_list` = $product_list, `coupon_list` = $coupon_list, `status` = $status, `order_date` = $order_date, `arrival_date` = $arrival_date, `address` = $address WHERE `id`= $coupon_id;";
+        $sql = "UPDATE  `OrderList` SET `product_list` = $product_list, `coupon_list` = $coupon_list, `status` = $status, `order_date` = $order_date, `arrival_date` = $arrival_date, `address` = $address WHERE `id`= $order_id;";
         // 用mysqli_query方法執行(sql語法)將結果存在變數中
         mysqli_query($link,$sql);
         mysqli_close($link);
     }
 
     function deleteOrder($order_id){
-        $link = ConnectToDataBase("mydb");
+        $link = connectDB();
         $sql = "DELETE FROM `OrderList` WHERE `id`= $order_id;";
         // 用mysqli_query方法執行(sql語法)將結果存在變數中
         mysqli_query($link,$sql);
