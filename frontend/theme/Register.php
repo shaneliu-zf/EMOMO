@@ -1,26 +1,24 @@
 <?php
-include "header.php";
-include "backend/register.php";
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+require_once "header.php";
+require_once "../../backend/User.php";
 
-if(isset($_POST["name"])){
-    if ($_SERVER['REQUEST_METHOD'] == "POST"){
-        $name = $_POST['name'];
-        $address = $_POST['address'];
-        $email = $_POST['email'];
-        $usertype = "Customer";
-        $password = $_POST['password'];
-        $Newuser = new User(0,$name,$email,$password,$address,$usertype);
-    }
-    $result = $Newuser->getIsRegistered();
-    if($result){
-        echo "<script>alert('已註冊過或有相同email');</script>";
-    }
-    else{
-        echo "<script>alert('註冊成功');</script>";
-    }
+if ($_SERVER['REQUEST_METHOD'] == "POST"){
+  $name = $_POST['name'];
+  $address = $_POST['address'];
+  $email = $_POST['email'];
+  $usertype = "Customer";
+  $password = $_POST['password'];
+  $Newuser = new User($name,$email,$password,$address,$usertype);
+  $result = $Newuser->getIsRegistered();
+  if($result){
+    echo "<script>alert('已註冊過或有相同email');</script>";
+  }
+  else{
+    echo "<script>alert('註冊成功');</script>";
+  }
 }
-
-
 ?>
 
 <section class="signin-page account">
@@ -33,7 +31,7 @@ if(isset($_POST["name"])){
           </a>
           <h2 class="text-center">Create Your Account</h2>
 
-          <form class="text-left clearfix" method="post" action="HandleRegister.php">
+          <form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div class="form-group">
               <label for="name">Name:</label>
               <input type="text" class="form-control"  id="name" name="name" required>
@@ -47,7 +45,7 @@ if(isset($_POST["name"])){
               <input type="password" class="form-control"  id="password" name="password" required>
             </div>
             <div class="form-group">
-             <label for="address">Address:</label>
+            <label for="address">Address:</label>
               <input type="text" class="form-control"  id="address" name="address" required>
             </div>
             <div class="text-center">

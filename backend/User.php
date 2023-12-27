@@ -11,7 +11,7 @@ class User{
     private $user_type;
     private bool $isRegistered;
 
-    function __construct($id,$name,$email,$password,$address,$user_type){
+    function __construct($name,$email,$password,$address,$user_type){
         $db = connectDB();
         $this->name = $name;
         $this->email = $email;
@@ -34,16 +34,16 @@ class User{
                 $this->isRegistered = false;
                 // 不存在相同的 user_id，執行插入操作
                 if ($user_type == 'admin'){
-                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($id, '$name', '$email', '$password', '$address', '$user_type')";
-                    $insertQuery2 = "INSERT INTO `Admin_list` (`user_id`) VALUES ($id)";
+                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery2 = "INSERT INTO `Admin_list` (`user_id`) VALUES ($this->user_id)";
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
                 elseif($user_type == 'customer'){
-                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
                 }
                 elseif($user_type == 'staff'){
-                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($id, '$name', '$email', '$password', '$address', '$user_type')";
-                    $insertQuery2 = "INSERT INTO `Staff_list` (`user_id`) VALUES ($id)";
+                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery2 = "INSERT INTO `Staff_list` (`user_id`) VALUES ($this->user_id)";
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
                 $insertResult = mysqli_query($db, $insertQuery);
