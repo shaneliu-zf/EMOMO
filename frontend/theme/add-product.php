@@ -20,105 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
   }
 }
 ?>
-<!DOCTYPE html>
-
-<!--
- // WEBSITE: https://themefisher.com
- // TWITTER: https://twitter.com/themefisher
- // FACEBOOK: https://www.facebook.com/themefisher
- // GITHUB: https://github.com/themefisher/
--->
-
-<html lang="en">
-<head>
-
-  <!-- Basic Page Needs
-  ================================================== -->
-  <meta charset="utf-8">
-  <title>Aviato | E-commerce template</title>
-
-  <!-- Mobile Specific Metas
-  ================================================== -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Construction Html5 Template">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="author" content="Themefisher">
-  <meta name="generator" content="Themefisher Constra HTML Template v1.0">
-  
-  <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
-  
-  <!-- Themefisher Icon font -->
-  <link rel="stylesheet" href="plugins/themefisher-font/style.css">
-  <!-- bootstrap.min css -->
-  <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
-  
-  <!-- Animate css -->
-  <link rel="stylesheet" href="plugins/animate/animate.css">
-  <!-- Slick Carousel -->
-  <link rel="stylesheet" href="plugins/slick/slick.css">
-  <link rel="stylesheet" href="plugins/slick/slick-theme.css">
-  
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
-
-  <!-- 在<head>標籤中添加以下CSS -->
-<style>
-    /* 新增商品表單樣式 */
-    .add-product {
-        padding: 60px 0;
-        background-color: #f9f9f9;
-    }
-
-    .add-product form {
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 5px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .add-product label {
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    .add-product input,
-    .add-product textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 3px;
-    }
-
-    /* 固定描述框的高度並禁止縮放 */
-    .add-product textarea {
-        height: 100px; /* 調整高度 */
-        resize: none; /* 禁止縮放 */
-    }
-
-    .add-product button {
-        background-color: #28a745;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    .add-product button:hover {
-        background-color: #218838;
-    }
-</style>
-
-</head>
-
-<body id="body">
-
-
-
-
-
 
 <!-- Main Menu Section -->
 <section class="add-product section">
@@ -141,17 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
                         <div class="form-group">
                             <label>商品類別：</label>
-                            <select id="productCategory" name="productCategory" class="form-control" required onchange="checkCategory(this)">
+                            <select id="productCategory" name="productCategory" class="form-control" required>
                                 <option value="家電類">家電類</option>
                                 <option value="食物類">食物類</option>
                                 <option value="衣物類">衣物類</option>
                                 <option value="其他">其他</option>
                             </select>
-                        </div>
-
-                        <div id="otherCategoryInput" style="display: none;" class="form-group">
-                            <label for="otherCategory">其他類別：</label>
-                            <input type="text" id="otherCategory" name="otherCategory" class="form-control">
                         </div>
 
                         <div class="form-group">
@@ -175,14 +71,5 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
         </div>
     </div>
 </section>
-
-<script>
-    function checkCategory(select) {
-        var otherCategoryInput = document.getElementById('otherCategoryInput');
-        otherCategoryInput.style.display = (select.value === '其他') ? 'block' : 'none';
-    }
-</script>
-
-
 
 <?php include "footer.php";?>

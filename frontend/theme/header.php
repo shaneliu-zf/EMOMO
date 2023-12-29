@@ -134,7 +134,7 @@
 					</li><!-- / Cart -->
 					
 					<li class="dropdown search dropdown-slide">
-						<a href="login.html" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+						<a href="login.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
 							<i class="tf-ion-android-person"></i>
 							登出
 						</a>
@@ -168,7 +168,7 @@
 
 					<!-- 首頁 -->
 					<li class="dropdown ">
-						<a href="shop-sidebar.html"> 首頁 </a>
+						<a href="shop-sidebar.php"> 首頁 </a>
 					</li><!-- / 首頁 -->
 
 
@@ -179,8 +179,8 @@
 								class="tf-ion-ios-arrow-down"></span></a>
 						<div class="dropdown-menu">
 							<ul>
-								<li><a href="cart.html">購物車</a></li>
-								<li><a href="order.html">我的訂單</a></li>
+								<li><a href="cart.php">購物車</a></li>
+								<li><a href="order.php">我的訂單</a></li>
 							</ul>
 						</div><!-- / .dropdown-menu -->
 					</li><!-- / 購物 -->
@@ -193,15 +193,15 @@
 								class="tf-ion-ios-arrow-down"></span></a>
 						<div class="dropdown-menu">
 							<ul>
-								<li><a href="dashboard.html">會員資料</a></li>
-								<li><a href="contact.html">聯繫客服</a></li>
+								<li><a href="dashboard.php">會員資料</a></li>
+								<li><a href="contact.php">聯繫客服</a></li>
 							</ul>
 						</div><!-- / .dropdown-menu -->
 					</li><!-- / 會員中心 -->
 
 					<!-- Home -->
 					<li class="dropdown ">
-						<a href="about.html"> 關於我們 </a>
+						<a href="about.php"> 關於我們 </a>
 					</li><!-- / Home -->
 
 			</div>

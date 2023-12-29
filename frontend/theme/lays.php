@@ -1,3 +1,23 @@
+<?php
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+require_once "../../backend/ShoppingCart.php";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST"){
+  $number = $_POST['number'];
+  $product_id = 7;
+  $user_id = 0;
+  $Newcart = New ShoppingCart();
+  $flag = $Newcart->addItem($number,$product_id,$user_id);
+  if($flag){
+    echo "<script>alert('新增成功');</script>";
+  }
+  else{
+    echo "<script>alert('新增失敗，請重試');</script>";
+  }
+}
+?>
+
 <!DOCTYPE html>
 
 <!--
@@ -99,13 +119,13 @@
 						</ul>
 					</p>
 					
-					<div class="product-quantity">
-						<span>數量:</span>
-						<div class="product-quantity-slider">
-							<input id="product-quantity" type="text" value="0" name="product-quantity">
-						</div>
-					</div>
-					<a href="cart.html" class="btn btn-main mt-20">加入購物車</a>
+					<form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                        <div class="form-group">
+                            <label for="number">數量:</label>
+                            <input type="number" class="form-control"  id="number" name="number" required>
+                        </div>
+                        <button type="submit" class="btn btn-main text-center">加入購物車</button>
+                    </form>
 				</div>
 			</div>
 		</div>
@@ -134,7 +154,7 @@
                       	</div>
 					</div>
 					<div class="product-content">
-						<h4><a href="koikeya.html">湖池屋 卡辣姆久</a></h4>
+						<h4><a href="koikeya.php">湖池屋 卡辣姆久</a></h4>
 						<p class="price">$58</p>
 					</div>
 				</div>
@@ -154,7 +174,7 @@
                       	</div>
 					</div>
 					<div class="product-content">
-						<h4><a href="cadina.html">卡迪那95℃ 北海道風味薯條</a></h4>
+						<h4><a href="cadina.php">卡迪那95℃ 北海道風味薯條</a></h4>
 						<p class="price">$79</p>
 					</div>
 				</div>
@@ -192,8 +212,8 @@
                                   </ul>
                             </p>
                             
-                            <!-- 下面一行要分不同的product-single.html -->
-                            <a href="koikeya.html" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
+                            <!-- 下面一行要分不同的product-single.php -->
+                            <a href="koikeya.php" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
                         </div>
                     </div>
                 </div>
@@ -228,8 +248,8 @@
                                 </ul>
                             </p>
                             
-                            <!-- 下面一行要分不同的product-single.html -->
-                            <a href="cadina.html" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
+                            <!-- 下面一行要分不同的product-single.php -->
+                            <a href="cadina.php" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
                         </div>
                     </div>
                 </div>

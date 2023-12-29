@@ -12,10 +12,10 @@
 				</ul>
 				<ul class="footer-menu text-uppercase">
 					<li>
-						<a href="contact.html">客服</a>
+						<a href="contact.php">客服</a>
 					</li>
 					<li>
-						<a href="shop-sidebar.html">購物</a>
+						<a href="shop-sidebar.php">購物</a>
 					</li>
 				</ul>
 				<p class="copyright-text">Copyright &copy;2023, Designed &amp; Developed by NTUT_CSIE_DS_10</p>

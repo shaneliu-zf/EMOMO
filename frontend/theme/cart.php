@@ -1,61 +1,27 @@
-<!DOCTYPE html>
+<?php
+include_once "header.php";
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+include_once "../../backend/ShoppingCart.php";
 
-<!--
- // WEBSITE: https://themefisher.com
- // TWITTER: https://twitter.com/themefisher
- // FACEBOOK: https://www.facebook.com/themefisher
- // GITHUB: https://github.com/themefisher/
--->
+$NewCart = new ShoppingCart();
 
-<html lang="en">
-<head>
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $user_id = $_POST['user_id'];
+    $product_id = $_POST['product_id'];
 
-  <!-- Basic Page Needs
-  ================================================== -->
-  <meta charset="utf-8">
-  <title>shopping cart</title>
+    $success = $NewCart->removeItem($user_id, $product_id);
 
-  <!-- Mobile Specific Metas
-  ================================================== -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Construction Html5 Template">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="author" content="Themefisher">
-  <meta name="generator" content="Themefisher Constra HTML Template v1.0">
-  
-  <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
-  
-  <!-- Themefisher Icon font -->
-  <link rel="stylesheet" href="plugins/themefisher-font/style.css">
-  <!-- bootstrap.min css -->
-  <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
-  
-  <!-- Animate css -->
-  <link rel="stylesheet" href="plugins/animate/animate.css">
-  <!-- Slick Carousel -->
-  <link rel="stylesheet" href="plugins/slick/slick.css">
-  <link rel="stylesheet" href="plugins/slick/slick-theme.css">
-  
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+    if ($success) {
+        echo "<script>alert('移除成功');</script>";
+    } else {
+        echo "<script>alert('移除失敗');</script>";
+    }
+}
+?>
 
-</head>
 
 <body id="body">
-
-
-<section class="page-header">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="content">
-					<h1 class="page-name">購物車</h1>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
 
 
 
@@ -68,7 +34,7 @@
             <div class="product-list">
               <form method="post">
                 <table class="table">
-                  <thead>
+                <thead>
                     <tr>
                       <th class="">商品名稱</th>
                       <th class="">價格</th>
@@ -76,42 +42,38 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="">
-                      <td class="">
-                        <div class="product-info">
-                          <img width="80" src="images/shop/cart/cart-1.jpg" alt="" />
-                          <a href="#!">Sunglass</a>
-                        </div>
-                      </td>
-                      <td class="">$200.00</td>
-                      <td class="">
-                        <a class="product-remove" href="#!">移除</a>
-                      </td>
-                    </tr>
-                    <tr class="">
-                      <td class="">
-                        <div class="product-info">
-                          <img width="80" src="images/shop/cart/cart-2.jpg" alt="" />
-                          <a href="#!">Airspace</a>
-                        </div>
-                      </td>
-                      <td class="">$200.00</td>
-                      <td class="">
-                        <a class="product-remove" href="#!">移除</a>
-                      </td>
-                    </tr>
-                    <tr class="">
-                      <td class="">
-                        <div class="product-info">
-                          <img width="80" src="images/shop/cart/cart-3.jpg" alt="" />
-                          <a href="#!">Bingo</a>
-                        </div>
-                      </td>
-                      <td class="">$200.00</td>
-                      <td class="">
-                        <a class="product-remove" href="#!">移除</a>
-                      </td>
-                    </tr>
+                  <?php
+                  ini_set('display_errors','1');
+                  error_reporting(E_ALL);
+                  include_once "../../backend/ShoppingCart.php";
+                  $NewCart = New ShoppingCart();
+                  for ($i = 1;$i < 10;$i++){
+                    $count = $NewCart->checkIfInCart(0,$i);
+                    if($count != 0){
+                      for ($j = 0; $j<$count;$j++){
+                        $name = $NewCart->getProductName($i);
+                        $price = $NewCart->getProductPrice($i);
+                        $image = $NewCart->getProductImage($i);
+                        echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
+                        echo "<tr class=''>";
+                        echo "<td class=''>";
+                        echo "<div class='product-info'>";
+                        echo "<img width='80' src=$image alt='' />";
+                        echo " <a href='#!'>$name</a>";
+                        echo "</div>";
+                        echo "</td>";
+                        echo "<td class=''>$price</td>";
+                        echo "<td class=''>";
+                        echo "<input type='hidden' name='user_id' value='0'>";
+                        echo "<input type='hidden' name='product_id' value='$i'>";
+                        echo "<button type='submit' class='product-remove'>移除</button>";
+                        echo "</td>";
+                        echo "</tr>";
+                        echo "</form>";
+                      }
+                    }
+                  }
+                  ?>
                   </tbody>
                 </table>
                 <a href="checkout.html" class="btn btn-main pull-right">結帳
@@ -160,3 +122,4 @@
 
   </body>
   </html>
+  <?php include "footer.php";?>

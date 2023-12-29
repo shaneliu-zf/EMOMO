@@ -1,29 +1,84 @@
 <?php
-
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+require_once "db.php";
+require_once "Product.php";
 class ShoppingCart {
+
     private $shopping_cart_id;
     private $product_list = [];
 
     public function __construct() {
-        $this->shopping_cart_id = uniqid('cart_');
+        
     }
 
-    public function addProduct($product_id, $product_name, $price, $quantity = 1) {
-        // 檢查產品是否在購物車中
-        if (isset($this->product_list[$product_id])) {
-            // 如果是，增加產品數量
-            $this->product_list[$product_id]['quantity'] += $quantity;
-        } 
-        else {
-            // 如果不是，添加產品到購物車
-            $this->product_list[$product_id] = [
-                'product_name' => $product_name,
-                'price' => $price,
-                'quantity' => $quantity,
-            ];
+    public function addItem($number,$product_id,$user_id){
+        $flag = false;
+        $db = connectDB();
+        $insertQuery = "INSERT INTO `ShoppingCart` (`user_id`, `product_id`) VALUES ($user_id, $product_id)";
+        for ($i = 1; $i < $number; $i++) {
+            // 在循环中构建多个 VALUES 子句
+            $insertQuery .= "($user_id, $product_id)";
+        
+            // 添加逗号和空格以分隔多个 VALUES 子句
+            if ($i < $number - 1) {
+                $insertQuery .= ", ";
+            }
         }
+        $result = mysqli_query($db, $insertQuery);
+        if($result !== false){
+            $flag = true;
+        }
+        mysqli_close($db);
+        return $flag;
+    }
 
-        echo "Product added to the shopping cart.\n";
+    public function removeItem($user_id, $product_id) {
+        $db = connectDB();
+
+        // Assuming your table has a primary key named 'id'
+        $deleteQuery = "DELETE FROM `ShoppingCart` WHERE `user_id` = $user_id AND `product_id` = $product_id";
+
+        $result = mysqli_query($db, $deleteQuery);
+
+        mysqli_close($db);
+
+        return $result;
+    }
+
+    public function checkIfInCart($user_id,$product_id){
+        $db = connectDB();
+        $checkQuery = "SELECT COUNT(*) as count FROM `ShoppingCart` WHERE `user_id` = $user_id AND `product_id` = $product_id";
+        $checkResult = mysqli_query($db, $checkQuery);
+        $row = mysqli_fetch_assoc($checkResult);
+        $count = $row['count'];
+        if($count > 0){
+            mysqli_free_result($checkResult);
+            return $count;
+        }
+        else{
+            mysqli_free_result($checkResult);
+            return $count;
+        }
+        mysqli_close($db);
+    }
+
+    public function getProductPrice($product_id){
+        $NewProduct = New Product();
+        $price = $NewProduct->getPricebyID($product_id);
+        return $price;
+    }
+
+    public function getProductName($product_id){
+        $NewProduct = New Product();
+        $name = $NewProduct->getNamebyID($product_id);
+        return $name;
+    }
+
+    public function getProductImage($product_id){
+        $NewProduct = New Product();
+        $image = $NewProduct->getImagebyID($product_id);
+        return $image;
     }
 
     public function submit() {

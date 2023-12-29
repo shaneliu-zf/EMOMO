@@ -1,3 +1,23 @@
+<?php
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+require_once "../../backend/ShoppingCart.php";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST"){
+  $number = $_POST['number'];
+  $product_id = 6;
+  $user_id = 0;
+  $Newcart = New ShoppingCart();
+  $flag = $Newcart->addItem($number,$product_id,$user_id);
+  if($flag){
+    echo "<script>alert('新增成功');</script>";
+  }
+  else{
+    echo "<script>alert('新增失敗，請重試');</script>";
+  }
+}
+?>
+
 <!DOCTYPE html>
 
 <!--
@@ -91,13 +111,13 @@
 						</ul>
 					</p>
 					
-					<div class="product-quantity">
-						<span>數量:</span>
-						<div class="product-quantity-slider">
-							<input id="product-quantity" type="text" value="0" name="product-quantity">
-						</div>
-					</div>
-					<a href="cart.html" class="btn btn-main mt-20">加入購物車</a>
+					<form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                        <div class="form-group">
+                            <label for="number">數量:</label>
+                            <input type="number" class="form-control"  id="number" name="number" required>
+                        </div>
+                        <button type="submit" class="btn btn-main text-center">加入購物車</button>
+                    </form>
 				</div>
 			</div>
 		</div>

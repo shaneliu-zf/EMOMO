@@ -1,3 +1,23 @@
+<?php
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+require_once "../../backend/ShoppingCart.php";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST"){
+  $number = $_POST['number'];
+  $product_id = 4;
+  $user_id = 0;
+  $Newcart = New ShoppingCart();
+  $flag = $Newcart->addItem($number,$product_id,$user_id);
+  if($flag){
+    echo "<script>alert('新增成功');</script>";
+  }
+  else{
+    echo "<script>alert('新增失敗，請重試');</script>";
+  }
+}
+?>
+
 <!DOCTYPE html>
 
 <!--
@@ -90,13 +110,13 @@
 						</ul>
 					</p>
 					
-					<div class="product-quantity">
-						<span>數量:</span>
-						<div class="product-quantity-slider">
-							<input id="product-quantity" type="text" value="0" name="product-quantity">
-						</div>
-					</div>
-					<a href="cart.html" class="btn btn-main mt-20">加入購物車</a>
+					<form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                        <div class="form-group">
+                            <label for="number">數量:</label>
+                            <input type="number" class="form-control"  id="number" name="number" required>
+                        </div>
+                        <button type="submit" class="btn btn-main text-center">加入購物車</button>
+                    </form>
 				</div>
 			</div>
 		</div>
@@ -125,7 +145,7 @@
                       	</div>
 					</div>
 					<div class="product-content">
-						<h4><a href="chimei.html">ChiMei 14吋 變頻壁扇電風扇</a></h4>
+						<h4><a href="chimei.php">ChiMei 14吋 變頻壁扇電風扇</a></h4>
 						<p class="price">$2540</p>
 					</div>
 				</div>
@@ -145,7 +165,7 @@
                       	</div>
 					</div>
 					<div class="product-content">
-						<h4><a href="tatung.html">TATUNG 復古紀念小電扇</a></h4>
+						<h4><a href="tatung.php">TATUNG 復古紀念小電扇</a></h4>
 						<p class="price">$790</p>
 					</div>
 				</div>
@@ -183,8 +203,8 @@
                                   </ul>
                             </p>
                             
-                            <!-- 下面一行要分不同的product-single.html -->
-                            <a href="chimei.html" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
+                            <!-- 下面一行要分不同的product-single.php -->
+                            <a href="chimei.php" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
                         </div>
                     </div>
                 </div>
@@ -219,8 +239,8 @@
                                   </ul>
                             </p>
                             
-                            <!-- 下面一行要分不同的product-single.html -->
-                            <a href="tatung.html" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
+                            <!-- 下面一行要分不同的product-single.php -->
+                            <a href="tatung.php" class="btn btn-transparent" style="font-weight:bold;">商品詳細內容</a>
                         </div>
                     </div>
                 </div>
