@@ -35,9 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
           <h2 class="text-center">登入帳號</h2>
           <form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div class="form-group">
+              <h3>Email</h3>
               <input type="email" class="form-control" id="email" name="email" required>
             </div>
-            <div class="form-group">
+            <div class="form-group">.
+              <h3>Password</h3>
               <input type="password" class="form-control" id="password" name="password" require>
             </div>
             <div class="text-center">

@@ -26,7 +26,7 @@
 						echo "<div class='product-content'>";
 						$name = Product::getNamebyID($i);
 						$price = Product::getPricebyID($i);
-						echo "<h4><a href='ProductDetail.php'>$name</a></h4>";
+						echo "<h4><a href='ProductDetail.php?id=$i'>$name</a></h4>";
 						echo "<p class='price'>$ $price</p>";
 						echo "</div></div></div>";
 
@@ -46,7 +46,7 @@
 						echo "<h2 class='product-title'>$name</h2>";
 						echo "<p class='product-price'>$ $price</p>";
 						echo "<p class='product-short-description'><ul>$description</ul></p>";
-						echo "<a href='ProductDetail.php' class='btn btn-transparent' style='font-weight:bold;'>商品詳細內容</a>";
+						echo "<a href='ProductDetail.php?id=$i' class='btn btn-transparent' style='font-weight:bold;'>商品詳細內容</a>";
 						echo "</div></div></div></div></div></div></div>";
 					}
 					?>
