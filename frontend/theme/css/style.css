@@ -51,6 +51,159 @@
 /*=== MEDIA QUERY ===*/
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500");
 
+.coupon-section {
+  margin-top: 50px;
+}
+
+.coupon-item {
+  background-color: #f2f2f2; /* 淺灰色背景 */
+  border: 2px solid #d1d1d1; /* 灰色邊框 */
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  border-radius: 15px; /* 圓角 */
+  color: #333; /* 深灰色文字 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 淺陰影效果 */
+}
+
+.coupon-item h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.coupon-code {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #e44d26; /* 標準橙色，可以根據需要更改 */
+}
+
+.coupon-date {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: #777;
+}
+.search-box {
+margin: 20px 0;
+display: flex;
+align-items: center;
+}
+
+#couponSearch {
+  width: 180px; /* 調整搜尋框寬度 */
+  padding: 10px;
+  border: 2px solid #ccc; /* 淺灰色系邊框 */
+  border-radius: 5px 5px 5px 5px;
+  margin-right: 10px; /* 增加搜尋框右側間隔 */
+  outline: none;
+}
+
+#couponSearch:focus {
+  border-color: #999; /* 深灰色系邊框 */
+}
+
+.search-btn {
+  background-color: #ccc; /* 淺灰色系背景 */
+  color: #333; /* 深灰色系文字 */
+  border: 2px solid #ccc; /* 淺灰色系邊框 */
+  border-radius: 5px 5px 5px 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background-color: #999; /* 深灰色系濃化背景 */
+  border-color: #999; /* 深灰色系濃化邊框 */
+}
+.search-box {
+display: flex;
+align-items: center;
+}
+
+#couponSearch {
+  border-radius: 5px 0 0 5px; /* 左側圓角 */
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 200px;
+}
+
+.search-btn {
+  background-color: #ccc;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px 5px 5px 5px; /* 右側圓角 */
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.add-btn {
+  background-color: #ccc;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px; /* 圓角 */
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-left: auto; /* 將新增優惠卷按鈕推到最右邊 */
+}
+
+.add-btn:hover,
+.search-btn:hover {
+  background-color: #999; /* 滑鼠懸停時的背景色 */
+  border-color: #999; /* 滑鼠懸停時的邊框色 */
+}
+
+.add-coupon {
+  padding: 60px 0;
+  background-color: #f9f9f9;
+}
+
+.add-coupon form {
+  background-color: #fff;
+  padding: 60px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.add-coupon label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+.add-coupon input,
+.add-coupon textarea,
+.add-coupon select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+/* 固定描述框的高度並禁止縮放 */
+.add-coupon textarea {
+  height: 100px; /* 調整高度 */
+  resize: none; /* 禁止縮放 */
+}
+
+.add-coupon button {
+background-color: #28a745;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 3px;
+cursor: pointer;
+font-size: 16px;
+float: right; /* 將按鈕浮動到右邊 */
+}
+
+.add-coupon button:hover {
+  background-color: #218838;
+}
 
 #pagination2 a { 
   display: inline-block;

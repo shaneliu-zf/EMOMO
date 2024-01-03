@@ -63,6 +63,17 @@ class ShoppingCart {
         mysqli_close($db);
     }
 
+    public function getNumInProduct(){
+        $db = connectDB();
+        $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Product_list`";
+        $checkCountResult = mysqli_query($db,$checkCount);
+        $row = mysqli_fetch_assoc($checkCountResult);
+        $count = $row['TotalItems'];
+        mysqli_free_result($checkCountResult);
+        mysqli_close($db);
+        return $count;
+    }
+
     public function getProductPrice($product_id){
         $NewProduct = New Product();
         $price = $NewProduct->getPricebyID($product_id);

@@ -1,5 +1,5 @@
 <?php
-include "db.php";
+include_once "db.php";
 
 class Product{
     private $product_id;
@@ -22,7 +22,10 @@ class Product{
             $count = $row['count'];
             if ($count == 0){
                 $this->issucess = true;
-                $insertQuery = "INSERT INTO `Product_list` (`product_id`, `name`, `price`, `description`, `image`) VALUES ($id, '$name', '$price', '$description', '$image')";
+
+                $insertQuery = "INSERT INTO `Product_list` (`product_id`, `name`, `price`, `description`, `image`)
+                VALUES ($id, '$name', '$price', '$description', '$image')";
+
                 $insertResult = mysqli_query($db, $insertQuery);
             }
             else{

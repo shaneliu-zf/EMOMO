@@ -11,7 +11,9 @@ class User{
     private $user_type;
     private bool $isRegistered;
 
-    function __construct($name,$email,$password,$address,$user_type){
+    function __construct(){}
+
+    public function createNewUser($name,$email,$password,$address,$user_type){
         $db = connectDB();
         $this->name = $name;
         $this->email = $email;
@@ -57,6 +59,23 @@ class User{
         }
         // 關閉資料庫連接
         mysqli_close($db);
+    }
+
+    public function loginCheck($email,$password){
+        $db = connectDB();
+        $query = "SELECT * FROM `Customer_list` WHERE `email` = '$email' AND `password` = '$password'";
+        $checkResult = mysqli_query($db, $query);
+        $flag = false;
+        $user_id = -1;
+        if (mysqli_num_rows($checkResult) > 0) {
+            $row = mysqli_fetch_assoc($checkResult);
+            $user_id = $row['user_id'];
+            mysqli_free_result($checkResult);
+            $flag = true;
+        }
+        mysqli_close($db);
+        $result = array($flag,$user_id);
+        return $result;
     }
 
     public function getIsRegistered(){

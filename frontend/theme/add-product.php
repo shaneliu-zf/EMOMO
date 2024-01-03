@@ -5,19 +5,32 @@ require_once "header.php";
 require_once "../../backend/Product.php";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
-  $name = $_POST['name'];
-  $price = $_POST['price'];
-  $description = $_POST['description'];
-  $image = $_POST['image'];
-  $Newproduct = new Product();
-  $Newproduct->saveProduct($name,$price,$description,$image);
-  $result = $Newproduct->getIssucess();
-  if($result){
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $description = $_POST['description'];
+    $input_image=$_FILES['image']['name'];
+    //echo $input_image;
+    $image_array=explode('.',$input_image);
+    $rand=rand(10000,99999);
+    $image_new_name=$image_array[0].$rand.'.'.$image_array[1];
+    $image_upload_path="uploads/".$image_new_name;
+    $is_uploaded=move_uploaded_file($_FILES["image"]["tmp_name"],$image_upload_path);
+    if($is_uploaded){
+        //echo 'Image Successfully Uploaded';
+    }
+    else{
+        echo 'Something Went Wrong!';
+    }
+    $image = "uploads/".$image_new_name;
+    $Newproduct = new Product();
+    $Newproduct->saveProduct($name,$price,$description,$image);
+    $result = $Newproduct->getIssucess();
+    if($result){
     echo "<script>alert('新增成功');</script>";
-  }
-  else{
+    }
+    else{
     echo "<script>alert('重複的名字');</script>";
-  }
+    }
 }
 ?>
 
@@ -28,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
             <div class="col-md-6 col-md-offset-3">
                 <div class="form-wrapper">
                     <h2 class="section-title">新增商品</h2>
-                    <form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                    <form class="text-left clearfix" method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                         <!-- 在這裡添加您的表單字段 -->
                         <div class="form-group">
                             <label for="name">商品名稱：</label>

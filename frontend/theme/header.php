@@ -1,3 +1,4 @@
+<?php include_once "../../backend/ShoppingCart.php";?>
 <!DOCTYPE html>
 
 <!--
@@ -38,7 +39,7 @@
   <link rel="stylesheet" href="plugins/slick/slick-theme.css">
   
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
 
 </head>
 
@@ -54,7 +55,7 @@
 			<div class="col-md-4 col-xs-12 col-sm-4">
 				<!-- Site Logo -->
 				<div class="logo text-center">
-					<a href="index.html">
+					<a href="index.php">
 						<!-- replace logo here -->
 						<svg width="135px" height="29px" viewBox="0 0 165 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
 							xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -87,56 +88,63 @@
 					
 					<!-- Cart -->
 					<li class="dropdown cart-nav dropdown-slide">
-						<a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"><i
-								class="tf-ion-android-cart"></i> 購物車</a>
-						<div class="dropdown-menu cart-dropdown">
-							<!-- Cart Item -->
-							<div class="media">
-								<a class="pull-left" href="#!">
-									<img class="media-object" src="images/shop/cart/cart-1.jpg" alt="image" />
-								</a>
-								<div class="media-body">
-									<h4 class="media-heading"><a href="#!">Ladies Bag</a></h4>
-									<div class="cart-price">
-										<span>1 x</span>
-										<span>1250.00</span>
-									</div>
-									<h5><strong>$1200</strong></h5>
-								</div>
-								<a href="#!" class="remove"><i class="tf-ion-close"></i></a>
-							</div><!-- / Cart Item -->
-							<!-- Cart Item -->
-							<div class="media">
-								<a class="pull-left" href="#!">
-									<img class="media-object" src="images/shop/cart/cart-2.jpg" alt="image" />
-								</a>
-								<div class="media-body">
-									<h4 class="media-heading"><a href="#!">Ladies Bag</a></h4>
-									<div class="cart-price">
-										<span>1 x</span>
-										<span>1250.00</span>
-									</div>
-									<h5><strong>$1200</strong></h5>
-								</div>
-								<a href="#!" class="remove"><i class="tf-ion-close"></i></a>
-							</div><!-- / Cart Item -->
-
-							<div class="cart-summary">
-								<span>Total</span>
-								<span class="total-price">$1799.00</span>
-							</div>
-							<ul class="text-center cart-buttons">
-								<li><a href="cart.html" class="btn btn-small">View Cart</a></li>
-								<li><a href="checkout.html" class="btn btn-small btn-solid-border">Checkout</a></li>
-							</ul>
-						</div>
+						<?php
+						if (isset($_COOKIE['user_id'])){
+							echo "<a href='/cart.php' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
+							echo "<div class='dropdown-menu cart-dropdown'>";
+							$total_price = 0;
+							$NewCart = new ShoppingCart();
+							$user_id = $_COOKIE['user_id'];
+							$number = $NewCart->getNumInProduct();
+							for ($i = 0;$i < $number;$i++){
+								$count = $NewCart->checkIfInCart($user_id,$i);
+								if($count != 0){
+									$name = $NewCart->getProductName($i);
+									$price = $NewCart->getProductPrice($i);
+									$image = $NewCart->getProductImage($i);
+									$price = $price * $count;
+									$total_price += $price;
+									echo "<div class='media'>";
+									echo "<a class='pull-left' href='#!'>";
+									echo "<img class='media-object' src='$image' alt='image' />";
+									echo "</a>";
+									echo "<div class='media-body'>";
+									echo "<h4 class='media-heading'><a href='#!'>$name</a></h4>";
+									echo "<div class='cart-price'>";
+									echo "<span>$count x</span>";
+									echo "<span>$price</span>";
+									echo "</div>";
+									echo "<h5><strong>$$price</strong></h5>";
+								}
+							  }
+							echo "<div class='cart-summary'>";
+							echo "<span>Total</span>";
+							echo "<span class='total-price'>$$total_price</span>";
+							echo "</div>";
+							echo "<ul class='text-center cart-buttons'>";
+							echo "<li><a href='cart.php' class='btn btn-small'>View Cart</a></li>";
+							echo "<li><a href='checkout.php' class='btn btn-small btn-solid-border'>Checkout</a></li>";
+							echo "</ul>";
+							echo "</div>";
+						}
+						else{
+							echo "<a href='/login.php' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
+						}
+						?>
+						
 
 					</li><!-- / Cart -->
 					
 					<li class="dropdown search dropdown-slide">
-						<a href="login.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+						<a href="javascript:void(0);" onclick="logout()" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
 							<i class="tf-ion-android-person"></i>
-							登出
+							<?php
+								if (isset($_COOKIE['user_id'])) {
+									echo "登出";
+								} else {
+									echo "登入";
+								}
+							?>
 						</a>
 					</li>
 				</ul><!-- / .nav .navbar-nav .navbar-right -->
@@ -172,18 +180,17 @@
 					</li><!-- / 首頁 -->
 
 
-					<!-- 購物 -->
-					<li class="dropdown dropdown-slide">
-						<a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="350"
-							role="button" aria-haspopup="true" aria-expanded="false"> 購物 <span
-								class="tf-ion-ios-arrow-down"></span></a>
-						<div class="dropdown-menu">
-							<ul>
-								<li><a href="cart.php">購物車</a></li>
-								<li><a href="order.php">我的訂單</a></li>
-							</ul>
-						</div><!-- / .dropdown-menu -->
-					</li><!-- / 購物 -->
+					<!-- 我的訂單 -->
+					<li class="dropdown ">
+						<?php
+							if (isset($_COOKIE['user_id'])){
+								echo "<a href='/order.php'>我的訂單</a>";
+							}
+							else{
+								echo "<a href='/login.php'>我的訂單</a>";
+							}
+						?>
+					</li><!-- / 我的訂單 -->
 
 
 					<!-- 會員中心 -->
@@ -193,7 +200,14 @@
 								class="tf-ion-ios-arrow-down"></span></a>
 						<div class="dropdown-menu">
 							<ul>
-								<li><a href="dashboard.php">會員資料</a></li>
+								<?php
+									if (isset($_COOKIE['user_id'])){
+										echo "<li><a href='/dashboard.php'>會員資料</a></li>";
+									}
+									else{
+										echo "<li><a href='/login.php'>會員資料</a></li>";
+									}
+								?>
 								<li><a href="contact.php">聯繫客服</a></li>
 							</ul>
 						</div><!-- / .dropdown-menu -->
@@ -209,3 +223,15 @@
 		</div><!-- / .container -->
 	</nav>
 </section>
+
+<script>
+function logout() {
+    // 清除 user_id Cookie
+    document.cookie = "user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // 其他登出相關處理...
+
+    // 跳轉到登出後的頁面或首頁
+    window.location.href = 'login.php';  // 修改為你的登出後頁面
+}
+</script>

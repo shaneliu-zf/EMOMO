@@ -47,8 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                   error_reporting(E_ALL);
                   include_once "../../backend/ShoppingCart.php";
                   $NewCart = New ShoppingCart();
-                  for ($i = 1;$i < 10;$i++){
-                    $count = $NewCart->checkIfInCart(0,$i);
+                  $number = $NewCart->getNumInProduct();
+                  if(isset($_COOKIE['user_id'])) {
+                    // 獲取 user_id
+                    $user_id = $_COOKIE['user_id'];
+                    }
+                  for ($i = 0;$i < $number;$i++){
+                    $count = $NewCart->checkIfInCart($user_id,$i);
                     if($count != 0){
                       for ($j = 0; $j<$count;$j++){
                         $name = $NewCart->getProductName($i);
@@ -64,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         echo "</td>";
                         echo "<td class=''>$price</td>";
                         echo "<td class=''>";
-                        echo "<input type='hidden' name='user_id' value='0'>";
+                        echo "<input type='hidden' name='user_id' value=' $user_id'>";
                         echo "<input type='hidden' name='product_id' value='$i'>";
                         echo "<button type='submit' class='product-remove'>移除</button>";
                         echo "</td>";

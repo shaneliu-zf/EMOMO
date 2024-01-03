@@ -9,8 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
   $address = $_POST['address'];
   $email = $_POST['email'];
   $usertype = "Customer";
-  $password = $_POST['password'];
-  $Newuser = new User($name,$email,$password,$address,$usertype);
+  $password = md5($_POST['password']);
+  $Newuser = new User();
+  $Newuser->createNewUser($name,$email,$password,$address,$usertype);
   $result = $Newuser->getIsRegistered();
   if($result){
     echo "<script>alert('已註冊過或有相同email');</script>";
@@ -26,34 +27,34 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="block text-center">
-          <a class="logo" href="index.html">
-            <img src="images/logo.png" alt="">
+          <a class="logo" href="shop-sidebar.php">
+            <h1>EMOMO</h1>
           </a>
-          <h2 class="text-center">Create Your Account</h2>
+          <h2 class="text-center">建立帳號</h2>
 
           <form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div class="form-group">
-              <label for="name">Name:</label>
+              <label for="name">名字:</label>
               <input type="text" class="form-control"  id="name" name="name" required>
             </div>
             <div class="form-group">
-              <label for="email">Email:</label>
+              <label for="email">Email帳號:</label>
               <input type="email" class="form-control"  id="email" name="email" required>
             </div>
             <div class="form-group">
-              <label for="password">Password:</label>
+              <label for="password">密碼:</label>
               <input type="password" class="form-control"  id="password" name="password" required>
             </div>
             <div class="form-group">
-            <label for="address">Address:</label>
+            <label for="address">地址:</label>
               <input type="text" class="form-control"  id="address" name="address" required>
             </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-main text-center">Sign In</button>
+              <button type="submit" class="btn btn-main text-center">創建</button>
             </div>
           </form>
-          <p class="mt-20">Already hava an account ?<a href="login.html"> Login</a></p>
-          <p><a href="forget-password.html"> Forgot your password?</a></p>
+          <p class="mt-20">已經有帳號了嗎 ?<a href="login.php"> 登入</a></p>
+          <p><a href="forget-password.php"> 忘記密碼?</a></p>
         </div>
       </div>
     </div>

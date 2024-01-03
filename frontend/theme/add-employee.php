@@ -7,9 +7,10 @@ require_once "../../backend/User.php";
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
   $name = $_POST['name'];
   $email = $_POST['email'];
-  $password = $_POST['password'];
+  $password = md5($_POST['password']);
   $address = $_POST['address'];
-  $NewUser = new User($name,$email,$password,$address,'staff');
+  $NewUser = new User();
+  $NewUser->createNewUser($name,$email,$password,$address,'staff');
   $result = $NewUser->getIsRegistered();
   if($result){
     echo "<script>alert('重複的email');</script>";
@@ -63,10 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
         </div>
     </div>
 </section>
-
-
-
-
 
 
   </body>
