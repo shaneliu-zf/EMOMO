@@ -16,7 +16,7 @@ class Admin extends Staff{
 
     public function getStaffName($id){
         $db = connectDB();
-        $sql = "SELECT * FROM `Customer_list` WHERE `user_id` = $id";
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_assoc($result);
         $name = $row['name'];
@@ -27,7 +27,7 @@ class Admin extends Staff{
 
     public function getStaffAddress($id){
         $db = connectDB();
-        $sql = "SELECT * FROM `Customer_list` WHERE `user_id` = $id";
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_assoc($result);
         $address = $row['address'];
@@ -38,7 +38,7 @@ class Admin extends Staff{
 
     public function getStaffemail($id){
         $db = connectDB();
-        $sql = "SELECT * FROM `Customer_list` WHERE `user_id` = $id";
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_assoc($result);
         $email = $row['email'];
@@ -51,7 +51,7 @@ class Admin extends Staff{
         $db = connectDB();
 
         $sql = "DELETE FROM `Staff_list` WHERE `user_id`= $user_id;";
-        $sql2 = "DELETE FROM `Customer_list` WHERE `user_id`= $user_id;";
+        $sql2 = "DELETE FROM `User_list` WHERE `user_id`= $user_id;";
 
         
         // 用mysqli_query方法執行(sql語法)將結果存在變數中

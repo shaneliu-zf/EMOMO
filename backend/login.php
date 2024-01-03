@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $db = connectDB();
-    $checkQuery = "SELECT COUNT(*) as count FROM `Customer_list` WHERE `email` = '$email' AND `password`='$password'";
+    $checkQuery = "SELECT COUNT(*) as count FROM `User_list` WHERE `email` = '$email' AND `password`='$password'";
     $checkResult = mysqli_query($db, $checkQuery);
     if ($checkResult){
         $row = mysqli_fetch_assoc($checkResult);

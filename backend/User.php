@@ -21,8 +21,8 @@ class User{
         $this->address = $address;
         $user_type = strtolower($user_type);
         $this->user_type = $user_type;
-        $checkQuery = "SELECT COUNT(*) as count FROM `Customer_list` WHERE `email` = '$email'";
-        $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Customer_list`";
+        $checkQuery = "SELECT COUNT(*) as count FROM `User_list` WHERE `email` = '$email'";
+        $checkCount = "SELECT COUNT(*) AS TotalItems FROM `User_list`";
         $checkCountResult = mysqli_query($db,$checkCount);
         $row = mysqli_fetch_assoc($checkCountResult);
         $count = $row['TotalItems'];
@@ -36,15 +36,15 @@ class User{
                 $this->isRegistered = false;
                 // 不存在相同的 user_id，執行插入操作
                 if ($user_type == 'admin'){
-                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
                     $insertQuery2 = "INSERT INTO `Admin_list` (`user_id`) VALUES ($this->user_id)";
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
                 elseif($user_type == 'customer'){
-                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
                 }
                 elseif($user_type == 'staff'){
-                    $insertQuery = "INSERT INTO `Customer_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
                     $insertQuery2 = "INSERT INTO `Staff_list` (`user_id`) VALUES ($this->user_id)";
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
@@ -63,7 +63,7 @@ class User{
 
     public function loginCheck($email,$password){
         $db = connectDB();
-        $query = "SELECT * FROM `Customer_list` WHERE `email` = '$email' AND `password` = '$password'";
+        $query = "SELECT * FROM `User_list` WHERE `email` = '$email' AND `password` = '$password'";
         $checkResult = mysqli_query($db, $query);
         $flag = false;
         $user_id = -1;
