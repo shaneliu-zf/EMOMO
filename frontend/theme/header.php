@@ -55,7 +55,7 @@
 			<div class="col-md-4 col-xs-12 col-sm-4">
 				<!-- Site Logo -->
 				<div class="logo text-center">
-					<a href="index.php">
+					<a href="shop-sidebar.php">
 						<!-- replace logo here -->
 						<svg width="135px" height="29px" viewBox="0 0 165 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
 							xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -90,12 +90,13 @@
 					<li class="dropdown cart-nav dropdown-slide">
 						<?php
 						if (isset($_COOKIE['user_id'])){
-							echo "<a href='/cart.php' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
+							echo "<a href='cart.php' class='dropdown-toggle' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
 							echo "<div class='dropdown-menu cart-dropdown'>";
 							$total_price = 0;
 							$NewCart = new ShoppingCart();
 							$user_id = $_COOKIE['user_id'];
 							$number = $NewCart->getNumInProduct();
+							echo "<div class='media'>";
 							for ($i = 0;$i < $number;$i++){
 								$count = $NewCart->checkIfInCart($user_id,$i);
 								if($count != 0){
@@ -104,12 +105,11 @@
 									$image = $NewCart->getProductImage($i);
 									$price = $price * $count;
 									$total_price += $price;
-									echo "<div class='media'>";
-									echo "<a class='pull-left' href='#!'>";
+									echo "<a class='pull-center' href='ProductDetail.php?id=$i'>";
 									echo "<img class='media-object' src='$image' alt='image' />";
 									echo "</a>";
 									echo "<div class='media-body'>";
-									echo "<h4 class='media-heading'><a href='#!'>$name</a></h4>";
+									echo "<h4 class='media-heading'><a href='ProductDetail.php?id=$i'>$name</a></h4>";
 									echo "<div class='cart-price'>";
 									echo "<span>$count x</span>";
 									echo "<span>$price</span>";
@@ -118,11 +118,11 @@
 								}
 							  }
 							echo "<div class='cart-summary'>";
-							echo "<span>Total</span>";
-							echo "<span class='total-price'>$$total_price</span>";
+							echo "<h3><span>Total</span>";
+							echo "<span class='total-price'>$$total_price</span></h3>";
 							echo "</div>";
 							echo "<ul class='text-center cart-buttons'>";
-							echo "<li><a href='cart.php' class='btn btn-small'>View Cart</a></li>";
+							echo "<li><a href='cart.php' class='btn btn-small btn-solid-border'>View Cart</a></li>";
 							echo "<li><a href='checkout.php' class='btn btn-small btn-solid-border'>Checkout</a></li>";
 							echo "</ul>";
 							echo "</div>";

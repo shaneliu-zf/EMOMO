@@ -7,7 +7,7 @@
 				<div class="content">
 					<h1 class="page-name">關於我們</h1>
 					<ol class="breadcrumb">
-						<li><a href="shop-sidebar.html">首頁</a></li>
+						<li><a href="shop-sidebar.php">首頁</a></li>
 						<li class="active">關於我們</li>
 					</ol>
 				</div>

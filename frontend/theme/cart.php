@@ -23,7 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <body id="body">
 
-
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">購物車</h1>
+					<ol class="breadcrumb">
+						<li><a href="shop-sidebar.php">首頁</a></li>
+						<li class="active">購物車</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
 
 <div class="page-wrapper">
   <div class="cart shopping">
@@ -37,8 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <thead>
                     <tr>
                       <th class="">商品名稱</th>
+
                       <th class="">價格</th>
-                      <th class=""></th>
+                    
                     </tr>
                   </thead>
                   <tbody>
@@ -52,19 +67,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     // 獲取 user_id
                     $user_id = $_COOKIE['user_id'];
                     }
+                  $total_price = 0;
                   for ($i = 0;$i < $number;$i++){
                     $count = $NewCart->checkIfInCart($user_id,$i);
                     if($count != 0){
-                      for ($j = 0; $j<$count;$j++){
                         $name = $NewCart->getProductName($i);
                         $price = $NewCart->getProductPrice($i);
                         $image = $NewCart->getProductImage($i);
+                        $price = $price * $count;
+                        $total_price += $price;
                         echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
                         echo "<tr class=''>";
                         echo "<td class=''>";
                         echo "<div class='product-info'>";
                         echo "<img width='80' src=$image alt='' />";
-                        echo " <a href='#!'>$name</a>";
+                        echo " <a href='#!'>$name x $count</a>";
                         echo "</div>";
                         echo "</td>";
                         echo "<td class=''>$price</td>";
@@ -75,15 +92,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         echo "</td>";
                         echo "</tr>";
                         echo "</form>";
-                      }
                     }
                   }
+                  echo "<tr class=''>";
+                  echo "<td class=''>";
+                  echo "<div class='product-info'>";
+                  echo "";
+                  echo " <a href='#!'></a>";
+                  echo "</div>";
+                  echo "</td>";
+                  echo "<td class=''>$total_price</td>";
+                  echo "<td class=''>";
+                  echo "</td>";
+                  echo "</tr>";
+                  echo "</form>";
+                  echo "</tbody>";
+                  echo "</table>";
+                  echo "<a href='checkout.php' class='btn btn-main pull-right'>結帳</a>";
+                  
                   ?>
-                  </tbody>
-                </table>
-                <a href="checkout.html" class="btn btn-main pull-right">結帳
-
-				</a>
+                
+                
               </form>
             </div>
           </div>
@@ -93,38 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
   </div>
 </div>
 
-
-
-    <!-- 
-    Essential Scripts
-    =====================================-->
-    
-    <!-- Main jQuery -->
-    <script src="plugins/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap 3.1 -->
-    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
-    <!-- Bootstrap Touchpin -->
-    <script src="plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
-    <!-- Instagram Feed Js -->
-    <script src="plugins/instafeed/instafeed.min.js"></script>
-    <!-- Video Lightbox Plugin -->
-    <script src="plugins/ekko-lightbox/dist/ekko-lightbox.min.js"></script>
-    <!-- Count Down Js -->
-    <script src="plugins/syo-timer/build/jquery.syotimer.min.js"></script>
-
-    <!-- slick Carousel -->
-    <script src="plugins/slick/slick.min.js"></script>
-    <script src="plugins/slick/slick-animation.min.js"></script>
-
-    <!-- Google Mapl -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC72vZw-6tGqFyRhhg5CkF2fqfILn2Tsw"></script>
-    <script type="text/javascript" src="plugins/google-map/gmap.js"></script>
-
-    <!-- Main Js File -->
-    <script src="js/script.js"></script>
-    
-
-
-  </body>
-  </html>
-  <?php include "footer.php";?>
+</body>
+</html>
+<?php include "footer.php";?>

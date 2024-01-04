@@ -15,8 +15,8 @@ class ShoppingCart {
     public function addItem($number,$product_id,$user_id){
         $flag = false;
         $db = connectDB();
-        $insertQuery = "INSERT INTO `ShoppingCart` (`user_id`, `product_id`) VALUES ($user_id, $product_id)";
-        for ($i = 1; $i < $number; $i++) {
+        $insertQuery = "INSERT INTO `ShoppingCart` (`user_id`, `product_id`) VALUES ";
+        for ($i = 0; $i < $number; $i++) {
             // 在循环中构建多个 VALUES 子句
             $insertQuery .= "($user_id, $product_id)";
         

@@ -98,4 +98,17 @@ class Product{
         mysqli_close($db);
         return $count;
     }
+
+    public static function getAll(){
+        $db = connectDB();
+        $checkQuery = "SELECT * FROM `Product_list`";
+        if ($checkResult = mysqli_query($db, $checkQuery)) {
+            mysqli_close($db);
+            return $checkResult;
+        }
+        else {
+            echo "無任何商品";
+            mysqli_close($db);
+        }
+    }
 }

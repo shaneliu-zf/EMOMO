@@ -10,10 +10,10 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="content">
-					<h1 class="page-name">Dashboard</h1>
+					<h1 class="page-name">我的訂單</h1>
 					<ol class="breadcrumb">
-						<li><a href="index.html">Home</a></li>
-						<li class="active">my account</li>
+						<li><a href="shop-sidebar.php">首頁</a></li>
+						<li class="active">我的訂單</li>
 					</ol>
 				</div>
 			</div>

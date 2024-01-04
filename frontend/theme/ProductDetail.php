@@ -5,16 +5,24 @@ require_once "../../backend/ShoppingCart.php";
 require_once "header.php";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
-  $number = $_POST['number'];
-  $product_id = 1;
-  $user_id = 0;
-  $Newcart = New ShoppingCart();
-  $flag = $Newcart->addItem($number,$product_id,$user_id);
-  if($flag){
-    echo "<script>alert('新增成功');</script>";
+  if (isset($_COOKIE['user_id'])){
+    $number = $_POST['number'];
+    $product_id = $_POST['product_id'];
+    $user_id = $_COOKIE["user_id"];
+    $Newcart = New ShoppingCart();
+    $flag = $Newcart->addItem($number,$product_id,$user_id);
+    if($flag){
+      echo "<script>alert('新增成功');</script>";
+      echo "<script>window.location.href = '/shop-sidebar.php';</script>";
+    }
+    else{
+      echo "<script>alert('新增失敗，請重試');</script>";
+      echo "<script>window.location.href = '/ProductDetail.php?id=$product_id';</script>";
+    }
   }
   else{
-    echo "<script>alert('新增失敗，請重試');</script>";
+    echo "<script>alert('尚未登入');</script>";
+    echo "<script>window.location.href = '/login.php';</script>";
   }
 }
 ?>
@@ -36,17 +44,12 @@ echo "<img src='$image' alt='圖片無法正常顯示' /></div></div></div>";
 echo "<!-- thumb --></div></div></div>";
 echo "<div class='col-md-7'><div class='$id-details'><h2>$name</h2><p class='product-price'>$$price</p><p class='product-description mt-20'>";
 echo "<ul>$description</ul></p>";
+echo "<form class='text-left clearfix' method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
+echo "<div class='form-group'><label for='number'>數量:</label>";
+echo "<input type='number' class='form-control'  id='number' name='number' required value='1'></div>";
+echo "<input type='hidden' name='product_id' value='$id'>";
+echo "<button type='submit' class='btn btn-main text-center'>加入購物車</button></form></div></div></div></div></section><br><br><br><br>";
 ?>
-
-<form class="text-left clearfix" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    <div class="form-group">
-        <label for="number">數量:</label>
-        <input type="number" class="form-control"  id="number" name="number" required>
-    </div>
-    <button type="submit" class="btn btn-main text-center">加入購物車</button>
-</form>
-
-</div></div></div></div></section><br><br><br><br>
 
 <?php
     include "footer.php";
