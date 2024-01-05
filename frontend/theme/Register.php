@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
   }
   else{
     echo "<script>alert('註冊成功');</script>";
+    echo "<script>window.location.href = '/login.php';</script>";
   }
 }
 ?>

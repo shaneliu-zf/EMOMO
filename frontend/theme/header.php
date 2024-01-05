@@ -73,18 +73,6 @@
 			</div>
 			<div class="col-md-4 col-xs-12 col-sm-4">
 				<ul class="top-menu text-right list-inline">
-					<!-- Search -->
-					<li class="dropdown search dropdown-slide">
-						<a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-							<i class="tf-ion-ios-search-strong"></i>
-							搜尋
-						</a>
-						<ul class="dropdown-menu search-dropdown">
-							<li>
-								<form action="post"><input type="search" class="form-control" placeholder="Search..."></form>
-							</li>
-						</ul>
-					</li><!-- / Search -->
 					
 					<!-- Cart -->
 					<li class="dropdown cart-nav dropdown-slide">
@@ -128,7 +116,7 @@
 							echo "</div>";
 						}
 						else{
-							echo "<a href='/login.php' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
+							echo "<a href='/login.php' class='dropdown-toggle' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
 						}
 						?>
 						
@@ -212,6 +200,32 @@
 							</ul>
 						</div><!-- / .dropdown-menu -->
 					</li><!-- / 會員中心 -->
+
+					<?php
+					ini_set('display_errors','1');
+					error_reporting(E_ALL);
+					require_once "../../backend/User.php";
+
+					if (isset($_COOKIE['user_id'])){
+						#員工專區
+						if(User::isAdmin($_COOKIE['user_id']) || User::isStaff($_COOKIE['user_id'])){
+							echo "<li class='dropdown dropdown-slide'>";
+							echo "<a href='#!' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown' data-delay='350'";
+							echo "role='button' aria-haspopup='true' aria-expanded='false'>員工專區<span class='tf-ion-ios-arrow-down'></span></a>";
+							echo "<div class='dropdown-menu'>";
+							echo "<ul>";
+							echo "<li><a href='/add-product.php'>新增商品</a></li>";
+							echo "<li><a href='/add-coupon.php'>新增優惠券</a></li>";
+							echo "</ul>";
+							echo "</div><!-- / .dropdown-menu -->";
+							echo "</li>";
+						}
+						#管理員
+						if(User::isAdmin($_COOKIE['user_id'])){
+							echo "<li class='dropdown '><a href='add-employee.php'> 新增員工 </a></li>";
+						}
+					}
+					?>
 
 					<!-- Home -->
 					<li class="dropdown ">

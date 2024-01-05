@@ -10,8 +10,8 @@ include_once "header.php";
                 <div class="content">
                     <h1 class="page-name">優惠卷</h1>
                     <ol class="breadcrumb">
-                        <li><a href="index.html">首頁</a></li>
-                        <li class="active">所有優惠卷</li>
+                        <li><a href="shop-sidebar.php">首頁</a></li>
+                        <li class="active">優惠卷</li>
                     </ol>
                 </div>
             </div>

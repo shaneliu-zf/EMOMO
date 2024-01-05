@@ -105,4 +105,38 @@ class User{
     public function getUserType(){
         return $this->user_type;
     }
+
+    public static function isAdmin($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Admin_list` WHERE user_id = $id";
+        $result = mysqli_query($db, $sql);
+        $row = mysqli_fetch_assoc($result);
+        if($row == null){
+            mysqli_free_result($result);
+            mysqli_close($db);
+            return false;
+        }
+        else{
+            mysqli_free_result($result);
+            mysqli_close($db);
+            return true;
+        }
+    }
+
+    public static function isStaff($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Staff_list` WHERE user_id = $id";
+        $result = mysqli_query($db, $sql);
+        $row = mysqli_fetch_assoc($result);
+        if($row == null){
+            mysqli_free_result($result);
+            mysqli_close($db);
+            return false;
+        }
+        else{
+            mysqli_free_result($result);
+            mysqli_close($db);
+            return true;
+        }
+    }
 }
