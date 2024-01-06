@@ -12,7 +12,7 @@
 				</ul>
 				<ul class="footer-menu text-uppercase">
 					<li>
-						<a href="contact.php">客服</a>
+						<a href="opinion-sheet.php">客服</a>
 					</li>
 					<li>
 						<a href="shop-sidebar.php">購物</a>

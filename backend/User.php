@@ -9,6 +9,7 @@ class User{
     private $password;
     private $address;
     private $user_type;
+    private $image;
     private bool $isRegistered;
 
     function __construct(){}
@@ -36,15 +37,15 @@ class User{
                 $this->isRegistered = false;
                 // 不存在相同的 user_id，執行插入操作
                 if ($user_type == 'admin'){
-                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`, `image`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type', 'images/duck.jpg')";
                     $insertQuery2 = "INSERT INTO `Admin_list` (`user_id`) VALUES ($this->user_id)";
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
                 elseif($user_type == 'customer'){
-                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`, `image`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type', 'images/duck.jpg')";
                 }
                 elseif($user_type == 'staff'){
-                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type')";
+                    $insertQuery = "INSERT INTO `User_list` (`user_id`, `name`, `email`, `password`, `address`, `usertype`, `image`) VALUES ($this->user_id, '$name', '$email', '$password', '$address', '$user_type', 'images/duck.jpg')";
                     $insertQuery2 = "INSERT INTO `Staff_list` (`user_id`) VALUES ($this->user_id)";
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
@@ -78,6 +79,23 @@ class User{
         return $result;
     }
 
+    public function editUser($user_id,$name,$password,$address){
+        $db = connectDB();
+        $this->name = $name;
+        $this->password = $password;
+        $this->address = $address;
+        $updateQuery = "UPDATE `User_list` SET
+                        `name` = '$name',
+                        `password` = '$password',
+                        `address` = '$address'
+                        WHERE `user_id` = '$user_id'";
+
+        $result = mysqli_query($db, $updateQuery);  
+
+        // 關閉資料庫連接
+        mysqli_close($db);
+    }
+
     public function getIsRegistered(){
         return $this->isRegistered;
     }
@@ -86,20 +104,52 @@ class User{
         return $this->user_id;
     }
 
-    public function getName(){
-        return $this->name;
+    public function getName($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $name = $row['name'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $name;
     }
 
-    public function getEmail(){
-        return $this->email;
+    public function getEmail($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $email = $row['email'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $email;
+    }
+
+    public function getImage($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $image = $row['image'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $image;
     }
 
     public function getPassword(){
         return $this->password;
     }
 
-    public function getAddress(){
-        return $this->address;
+    public function getAddress($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $address = $row['address'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $address;
     }
 
     public function getUserType(){
@@ -138,5 +188,16 @@ class User{
             mysqli_close($db);
             return true;
         }
+    }
+
+    public function changeImage($user_id,$image){
+        $db = connectDB();
+        $this->$image = $image;
+        $updateQuery = "UPDATE `User_list` SET `image` = '$image' WHERE `user_id` = '$user_id'";
+
+        $result = mysqli_query($db, $updateQuery);  
+
+        // 關閉資料庫連接
+        mysqli_close($db);
     }
 }

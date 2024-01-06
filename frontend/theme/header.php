@@ -30,6 +30,7 @@
   <!-- Themefisher Icon font -->
   <link rel="stylesheet" href="plugins/themefisher-font/style.css">
   <!-- bootstrap.min css -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
   
   <!-- Animate css -->
@@ -78,31 +79,31 @@
 					<li class="dropdown cart-nav dropdown-slide">
 						<?php
 						if (isset($_COOKIE['user_id'])){
-							echo "<a href='cart.php' class='dropdown-toggle' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
+							echo "<a href='cart.php' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
 							echo "<div class='dropdown-menu cart-dropdown'>";
 							$total_price = 0;
 							$NewCart = new ShoppingCart();
 							$user_id = $_COOKIE['user_id'];
 							$number = $NewCart->getNumInProduct();
-							echo "<div class='media'>";
 							for ($i = 0;$i < $number;$i++){
 								$count = $NewCart->checkIfInCart($user_id,$i);
 								if($count != 0){
 									$name = $NewCart->getProductName($i);
 									$price = $NewCart->getProductPrice($i);
 									$image = $NewCart->getProductImage($i);
-									$price = $price * $count;
-									$total_price += $price;
-									echo "<a class='pull-center' href='ProductDetail.php?id=$i'>";
+									$single_price = $price * $count;
+									$total_price += $single_price;
+									echo "<div class='media'>";
+									echo "<a class='pull-left' href='ProductDetail.php?id=$i'>";
 									echo "<img class='media-object' src='$image' alt='image' />";
 									echo "</a>";
 									echo "<div class='media-body'>";
 									echo "<h4 class='media-heading'><a href='ProductDetail.php?id=$i'>$name</a></h4>";
 									echo "<div class='cart-price'>";
-									echo "<span>$count x</span>";
+									echo "<span>$count x </span>";
 									echo "<span>$price</span>";
+									echo "</div><a class='pull-right'><h5><strong>$$single_price</strong></h5></a></div>";
 									echo "</div>";
-									echo "<h5><strong>$$price</strong></h5>";
 								}
 							  }
 							echo "<div class='cart-summary'>";
@@ -116,7 +117,7 @@
 							echo "</div>";
 						}
 						else{
-							echo "<a href='/login.php' class='dropdown-toggle' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
+							echo "<a href='/login.php' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
 						}
 						?>
 						
@@ -124,7 +125,7 @@
 					</li><!-- / Cart -->
 					
 					<li class="dropdown search dropdown-slide">
-						<a href="javascript:void(0);" onclick="logout()" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+						<a href="javascript:void(0);" onclick="logout()" data-toggle="dropdown" data-hover="dropdown">
 							<i class="tf-ion-android-person"></i>
 							<?php
 								if (isset($_COOKIE['user_id'])) {
@@ -183,20 +184,22 @@
 
 					<!-- 會員中心 -->
 					<li class="dropdown dropdown-slide">
-						<a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="350"
+						<a data-toggle="dropdown" data-hover="dropdown" data-delay="350"
 							role="button" aria-haspopup="true" aria-expanded="false">會員中心<span
 								class="tf-ion-ios-arrow-down"></span></a>
 						<div class="dropdown-menu">
 							<ul>
 								<?php
+									require_once "../../backend/User.php";
 									if (isset($_COOKIE['user_id'])){
-										echo "<li><a href='/dashboard.php'>會員資料</a></li>";
+										echo "<li><a href='/personal.php'>會員資料</a></li>";
+										echo "<li><a href='/opinion-sheet.php'>聯繫客服</a></li>";
 									}
 									else{
 										echo "<li><a href='/login.php'>會員資料</a></li>";
+										echo "<li><a href='/login.php'>聯繫客服</a></li>";
 									}
 								?>
-								<li><a href="contact.php">聯繫客服</a></li>
 							</ul>
 						</div><!-- / .dropdown-menu -->
 					</li><!-- / 會員中心 -->
@@ -210,12 +213,13 @@
 						#員工專區
 						if(User::isAdmin($_COOKIE['user_id']) || User::isStaff($_COOKIE['user_id'])){
 							echo "<li class='dropdown dropdown-slide'>";
-							echo "<a href='#!' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown' data-delay='350'";
+							echo "<a data-toggle='dropdown' data-hover='dropdown' data-delay='350'";
 							echo "role='button' aria-haspopup='true' aria-expanded='false'>員工專區<span class='tf-ion-ios-arrow-down'></span></a>";
 							echo "<div class='dropdown-menu'>";
 							echo "<ul>";
 							echo "<li><a href='/add-product.php'>新增商品</a></li>";
 							echo "<li><a href='/add-coupon.php'>新增優惠券</a></li>";
+							echo "<li><a href='/feedback.php'>用戶回饋</a></li>";
 							echo "</ul>";
 							echo "</div><!-- / .dropdown-menu -->";
 							echo "</li>";

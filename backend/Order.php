@@ -18,6 +18,7 @@ class Order {
         $this->order_date = date('Y-m-d');  // 日期預設為今天
     }
 
+
     public static function getStatusbyID($id){
         $db = connectDB();
         $sql = "SELECT * FROM `Order_list` WHERE `id` = $id";
@@ -62,6 +63,17 @@ class Order {
         return $address;
     }
 
+    public static function getPricebyID($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Order_list` WHERE `id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $address = $row['price'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $price;
+    }
+
     public static function addCoupon(Coupon $coupon, $sum) {
         if ((($coupon->getRule_mode() == 'sum') && ($sum >= $coupon->getRule())) || (($coupon->getRule_mode() == 'amount') && (count($this->product_list) >= $coupon->getRule()))){
             if($coupon->getDiscount_mode() == 'minus'){
@@ -89,6 +101,19 @@ class Order {
     public static function getOrderDetails($user_id) {
         $db = connectDB();
         $checkQuery = "SELECT * FROM `Order_list` WHERE user_id = $user_id";
+        if ($checkResult = mysqli_query($db, $checkQuery)) {
+            mysqli_close($db);
+            return $checkResult;
+        }
+        else {
+            echo "無任何商品";
+            mysqli_close($db);
+        }
+    }
+
+    public static function getOrderitems($order_id,$user_id) {
+        $db = connectDB();
+        $checkQuery = "SELECT * FROM `Ordered_product_list` WHERE `user_id` = '$user_id' AND `order_id` = '$order_id'";
         if ($checkResult = mysqli_query($db, $checkQuery)) {
             mysqli_close($db);
             return $checkResult;
