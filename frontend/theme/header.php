@@ -25,7 +25,7 @@
   <meta name="generator" content="Themefisher Constra HTML Template v1.0">
   
   <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
+  <link rel="shortcut icon" type="image/x-icon" href="images/emomo.png" />
   
   <!-- Themefisher Icon font -->
   <link rel="stylesheet" href="plugins/themefisher-font/style.css">
@@ -41,6 +41,10 @@
   
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- 引入 jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 
 </head>
 
@@ -226,7 +230,8 @@
 						}
 						#管理員
 						if(User::isAdmin($_COOKIE['user_id'])){
-							echo "<li class='dropdown '><a href='add-employee.php'> 新增員工 </a></li>";
+							echo "<li class='dropdown '><a href='employee-list.php'> 員工列表 </a></li>";
+							echo "<li class='dropdown '><a href='monthly_report.php'> 數據分析 </a></li>";
 						}
 					}
 					?>

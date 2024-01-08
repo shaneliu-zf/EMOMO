@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
             <div class="col-md-6 col-md-offset-3">
                 <div class="form-wrapper">
                     <h2 class="section-title">新增商品</h2>
-                    <form class="text-left clearfix" method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                    <form  id="addProductForm" class="text-left clearfix" method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                         <!-- 在這裡添加您的表單字段 -->
                         <div class="form-group">
                             <label for="name">商品名稱：</label>

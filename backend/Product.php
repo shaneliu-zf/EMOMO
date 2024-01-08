@@ -15,7 +15,46 @@ class Product{
         $checkCountResult = mysqli_query($db,$checkCount);
         $row = mysqli_fetch_assoc($checkCountResult);
         $count = $row['TotalItems'];
-        $id = $count;
+        $finalNumberQuery = "SELECT * FROM `Product_list` ORDER BY `product_id` DESC LIMIT 0, 1";
+        $getfinalNumber  = mysqli_query($db, $finalNumberQuery);
+        if ($getfinalNumber) {
+            $row = mysqli_fetch_assoc($getfinalNumber);
+            $final = $row['product_id'];
+        } 
+        else {
+            echo "Error: " . mysqli_error($db);
+        }
+        if($final == ($count - 1)){
+            $id = $count;
+        }
+        else{
+            $missNumber = "SELECT product_id + 1 AS missing_id
+                            FROM Product_list
+                            WHERE NOT EXISTS (
+                                SELECT 1
+                                FROM Product_list P
+                                WHERE P.product_id = Product_list.product_id + 1
+                            )
+                            ORDER BY product_id
+                            LIMIT 1";
+
+            $getMissNumber = mysqli_query($db, $missNumber);
+
+            if ($getMissNumber) {
+                // 檢查結果集是否存在
+                if ($row = mysqli_fetch_assoc($getMissNumber)) {
+                    $miss = $row['missing_id'];
+                    $id = $miss;
+                } 
+                else {
+                    echo "No missing number found.";
+                }
+            } 
+            else {
+                // 處理 mysqli_query 失敗的情況
+                echo "Error: " . mysqli_error($db);
+            }
+        }
         $checkResult = mysqli_query($db, $checkQuery);
         if ($checkResult) {
             $row = mysqli_fetch_assoc($checkResult);
@@ -33,6 +72,13 @@ class Product{
             }
             mysqli_free_result($checkCountResult);
         }
+        mysqli_close($db);
+    }
+
+    public function deleteProduct($id){
+        $db = connectDB();
+        $delete = "DELETE FROM `Product_list` WHERE `product_id` = $id";
+        mysqli_query($db,$delete);
         mysqli_close($db);
     }
 
@@ -101,7 +147,7 @@ class Product{
 
     public static function getAll(){
         $db = connectDB();
-        $checkQuery = "SELECT * FROM `Product_list`";
+        $checkQuery = "SELECT * FROM `Product_list` ORDER BY `product_id`";
         if ($checkResult = mysqli_query($db, $checkQuery)) {
             mysqli_close($db);
             return $checkResult;

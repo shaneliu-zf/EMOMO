@@ -47,6 +47,17 @@ class Admin extends Staff{
         return $email;
     }
 
+    public function getStaffimage($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $image = $row['image'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $image;
+    }
+
     public function deleteStaff($user_id){
         $db = connectDB();
 
@@ -59,5 +70,4 @@ class Admin extends Staff{
         mysqli_query($db,$sql2);
         mysqli_close($db); 
     }
-
 }

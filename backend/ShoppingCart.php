@@ -46,6 +46,17 @@ class ShoppingCart {
         return $result;
     }
 
+    public function removeAllItem($product_id) {
+        $db = connectDB();
+
+        // Assuming your table has a primary key named 'id'
+        $deleteQuery = "DELETE FROM `ShoppingCart` WHERE `product_id` = $product_id";
+
+        $result = mysqli_query($db, $deleteQuery);
+
+        mysqli_close($db);
+    }
+
     public function checkIfInCart($user_id,$product_id){
         $db = connectDB();
         $checkQuery = "SELECT COUNT(*) as count FROM `ShoppingCart` WHERE `user_id` = $user_id AND `product_id` = $product_id";
@@ -63,6 +74,24 @@ class ShoppingCart {
         mysqli_close($db);
     }
 
+    public function isExist($product_id){
+        $db = connectDB();
+        $checkQuery = "SELECT COUNT(*) as count FROM `ShoppingCart` WHERE `product_id` = $product_id";
+        $checkResult = mysqli_query($db, $checkQuery);
+        $row = mysqli_fetch_assoc($checkResult);
+        $count = $row['count'];
+        if($count > 0){
+            mysqli_free_result($checkResult);
+            mysqli_close($db);
+            return true;
+        }
+        else{
+            mysqli_free_result($checkResult);
+            mysqli_close($db);
+            return false;
+        }
+    }
+
     public function getNumInProduct(){
         $db = connectDB();
         $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Product_list`";
@@ -72,6 +101,19 @@ class ShoppingCart {
         mysqli_free_result($checkCountResult);
         mysqli_close($db);
         return $count;
+    }
+
+    public function getAllProduct($user_id){
+        $db = connectDB();
+        $Query = "SELECT * FROM `ShoppingCart` WHERE `user_id` = '$user_id'";
+        if ($Result = mysqli_query($db,$Query)) {
+            mysqli_close($db);
+            return $Result;
+        }
+        else {
+            echo "無任何商品";
+            mysqli_close($db);
+        }
     }
 
     public function getProductPrice($product_id){
@@ -95,9 +137,6 @@ class ShoppingCart {
     public function submit() {
     }
 
-    public function getProductList() {
-        return $this->product_list;
-    }
 }
 
 ?>

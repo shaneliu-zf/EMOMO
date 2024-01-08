@@ -84,12 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 <section class="user-dashboard page-wrapper">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="dashboard-wrapper user-dashboard">
-					<div class="media">
-                        <div class="pull-left user-image" onmouseover="hoverImage(this)" onmouseout="unhoverImage(this)" onclick="showModal()">
+    <div class="container">
+        <div class="border">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="pull-left user-image" onmouseover="hoverImage(this)" onmouseout="unhoverImage(this)" onclick="showModal()">
 								<?php
 								include_once "../../backend/User.php";
 								$NewUser = new User();
@@ -99,36 +98,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 								$address = $NewUser->getAddress($user_id);
                                 $image = $NewUser->getImage($user_id);
 								echo 
-                                "<img class='media-object user-img' src='$image' alt='Image'>
+                                "<img class='img-circle' src='$image' alt='Image' >
                                     </div>
-                                        <div class='media-body'>
-                                            <div class='row'>
-                                                <div class='col-md-9'>
-										            <div class='user-info'>
-									                <p>Name: $name</p>
-										            <p>Email: $email</p>
-										            <p>Address: $address</p>
-										        </div>
-									        </div>";
-								?>
-
-                                <div class="col-md-3 d-flex flex-column align-items-center justify-content-end" style="margin-top: auto; margin-bottom: 15px;">
-                                    <button class="btn btn-secondary btn-lg" onclick="showEditForm()">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                                        </svg>
-                                    </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                <div class='col-md-6 d-flex align-items-center'>
+                                    <div class='user-info text-center'>
+                                        <p style='font-size: 1.5em; text-align: left;'><strong>Name:</strong> $name</p>
+                                        <p style='font-size: 1.5em; text-align: left;'><strong>Email:</strong> $email</p>
+                                        <p style='font-size: 1.5em; text-align: left;'><strong>Address:</strong> $address</p>
+                                    </div>
+                                </div>";
+								?>
+                                <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="margin-top: auto; margin-bottom: 100px;">
+                                <button class="btn btn-secondary btn-lg" onclick="showEditForm()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-
 
 <div class="modal fade" id="changeImageModal" tabindex="-1" role="dialog" aria-labelledby="changeImageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document" aria-modal="true">
@@ -192,8 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="saveChanges()">確定</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="saveChanges()">確定</button>
                         </div>
                     </div>
                 </div>

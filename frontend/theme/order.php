@@ -1,4 +1,38 @@
-<?php include "header.php"; ?>
+<?php
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+require_once "header.php";
+require_once "../../backend/Order.php";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 確保有 action 參數
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+
+        // 根據 action 的值執行相應的操作
+        if ($action === 'updateStatus') {
+            // 獲取 POST 數據
+            $newStatus = $_POST['status'];
+			$id = $_POST['orderId'];
+
+			if($newStatus == "Completed"){
+				Order::updateArrivalDate($id);
+			}
+            Order::changeStatus($id,$newStatus);
+            $response = ['status' => 'success'];
+            echo json_encode($response);
+        } 
+        else{
+            http_response_code(400);
+            echo 'Bad Request';
+        }
+    }
+    else {
+        http_response_code(400);
+        echo 'Bad Request';
+    }
+}
+?>
 
 <section class="page-header">
 	<div class="container">
@@ -16,19 +50,6 @@
 	</div>
 </section>
 <section class="user-dashboard page-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="list-inline dashboard-menu text-center">
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a class="active" href="order.html">Orders</a></li>
-                    <li><a href="address.html">Address</a></li>
-                    <li><a href="profile-details.html">Profile Details</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -71,6 +92,7 @@
 									ini_set('display_errors','1');
 									error_reporting(E_ALL);
 									include_once "../../backend/Order.php";
+									include_once "../../backend/Product.php";
 
 									if (isset($_COOKIE['user_id'])){
 										$order_list = Order::getOrderDetails($_COOKIE["user_id"]);
@@ -82,14 +104,42 @@
 											$address = $row[4];
 											$user_id = $row[5];
 											$gift_code = $row[6];
+											$Items = Order::getOrderitems($id, $user_id);
+											$count = 0;
+											$total_price = 0;
+											while ($row=mysqli_fetch_row($Items)){
+												$count += $row[4];
+												$total_price += Product::getPricebyID($row[3]);
+											}
+											switch ($status) {
+												case "Completed":
+													$color = "success";
+													break;
+												case "Pending":
+													$color = "primary";
+													break;
+												case "Canceled":
+													$color = "danger";
+													break;
+												case "Arrived":
+													$color = "warning";
+													break;
+												case "Process":
+													$color = "info";
+													break;
+											}
 											echo "<tr>";
 											echo "<td>".$id."</td>";
-											echo "<td>".$arrival_date."</td>";
-											echo "<td>2</td>";
-											echo "<td>$99.00</td>";
-											echo "<td><span class='label label-primary'>$status</span></td><td>";
-											echo "<input type='hidden' name='id' value='$id'>";
-											echo "<a href='javascript:void(0);' class='btn btn-default' onclick='showOrderDetails(this)'>View</a></td>";
+											echo "<td>".$order_date."</td>";
+											echo "<td>$count</td>";
+											echo "<td>$total_price</td>";
+											echo "<td><span id='status$id' class='label label-$color'>$status</span></td>";
+											echo "<td>";
+											if(User::isAdmin($_COOKIE['user_id']) || User::isStaff($_COOKIE['user_id'])){
+												echo "<a class='btn btn-default' onclick='openModalAndChangeStatus(status$id)'><i class='fa-solid fa-clipboard-list fa-lg'></i></a>";
+											}
+											echo "<a href='javascript:void(0);' class='btn btn-default' onclick='showOrderDetails(this)'>View</a>";
+											echo "</td>";
 											echo "</tr>";
 										}
 									}
@@ -110,8 +160,83 @@
 	</div>
 </section>
 
+<div id="myModal" class="modal" >
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel"><strong>Edit Status</strong></h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="statusSelect">Select Status:</label>
+                    <select class="form-control" id="statusSelect">
+                        <option value="label-success">Completed</option>
+                        <option value="label-primary">Pending</option>
+                        <option value="label-danger">Canceled</option>
+                        <option value="label-warning">Arrived</option>
+                        <option value="label-info">Process</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+	var orderId;
+
+	function openModalAndChangeStatus(statusId) {
+        // 使用 Bootstrap 的方法显示模态框
+        $('#myModal').modal('show');
+
+        // 存储当前订单状态标签的id
+        currentStatusId = statusId;
+
+        // 获取当前订单状态标签的文字
+        var currentStatusText = document.getElementById(statusId).innerText;
+
+		var orderId = $tr.find('td:eq(0)').text();
+
+        // 设置下拉菜单选中项为当前状态文字
+        document.getElementById('statusSelect').value = currentStatusText;
+    }
+
+	function closeModal() {
+        // 使用 Bootstrap 的方法关闭模态框
+        $('#myModal').modal('hide');
+    }
+
+	function updateStatus() {
+        var status = document.getElementById('statusSelect').options[document.getElementById('statusSelect').selectedIndex].text;
+
+		$.ajax({
+                type: 'POST',
+                url: window.location.href,  // 使用當前頁面的 URL
+                data: {
+                    action: 'updateStatus',
+                    status: status,
+					orderId: orderId
+                },
+                success: function(response) {
+                        alert('編輯成功');
+                        window.location.href = '/order.php';
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+
+        // 关闭模态框
+        closeModal();
+    }
+	
     function showOrderDetails(button) {
         // 獲取該行(tr)的資料
         var $tr = $(button).closest('tr');
@@ -120,7 +245,7 @@
         var orderId = $tr.find('td:eq(0)').text();
         var orderData = {
             orderId: orderId,
-            date: $tr.find('td:eq(1)').text(),
+            order_date: $tr.find('td:eq(1)').text(),
             amount: $tr.find('td:eq(2)').text(),
             totalPrice: $tr.find('td:eq(3)').text(),
             status: $tr.find('td:eq(4) span').text()
@@ -142,7 +267,7 @@
                         </div>
                         <div class="modal-body">
                             <p><strong>Order ID:</strong> ${orderData.orderId}</p>
-                            <p><strong>Date:</strong> ${orderData.date}</p>
+                            <p><strong>Order Date:</strong> ${orderData.order_date}</p>
                             <p><strong>Amount:</strong> ${orderData.amount}</p>
                             <p><strong>Total Price:</strong> ${orderData.totalPrice}</p>
                             <p><strong>Status:</strong> ${orderData.status}</p>
@@ -150,17 +275,23 @@
 								ini_set('display_errors','1');
 								error_reporting(E_ALL);
 								include_once "../../backend/Order.php";
+								include_once "../../backend/Product.php";
 
 								if ($_SERVER['REQUEST_METHOD'] == "POST"){
 									$id = $_POST['id'];
-									$address = Order::getAddressbyID($id);
+									$address = Order::getAddressbyID($orderId);
 								}
 								echo "<p><strong>Address:</strong>$address</p>";
+								echo "<hr><p><strong>Ordered Items:</strong></p><ul>";
+								$user_id = $_COOKIE['user_id'];
+								$Items = Order::getOrderitems($id, $user_id);
+								while ($row=mysqli_fetch_row($Items)){
+									$name = Product::getNamebyID($row[3]);
+									$amount = Order::getOrderSingleItemsCount($id, $user_id, $row[3]);
+									$price = Product::getpricebyID($row[3]);
+									echo "<li>$name - $amount * $$price</li>";
+								}
 							?>
-                            <hr>
-                            <p><strong>Ordered Items:</strong></p>
-                            <ul>
-                                ${renderOrderedItems(orderId)}
                             </ul>
                         </div>
                         <div class="modal-footer">
@@ -176,18 +307,6 @@
 
         // 顯示模態框
         $('#orderDetailsModal').modal('show');
-    }
-
-    // 渲染訂單中的商品列表
-    function renderOrderedItems(orderId) {
-        // 在這裡你可以根據 orderId 從後端取得相應的商品列表資訊
-        // 我做個範例而已 這裡可能以後要去爬資料庫的資料
-        var itemsHtml = `
-            <li>Product 1 - 2 x $99.00</li>
-            <li>Product 2 - 1 x $51.00</li>
-            <!-- 更多商品行... -->
-        `;
-        return itemsHtml;
     }
 </script>
 

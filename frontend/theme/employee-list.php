@@ -25,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <div class="content">
                     <h1 class="page-name">員工列表</h1>
                     <ol class="breadcrumb">
-                        <li><a href="index.html">Home</a></li>
-                        <li class="active">my account</li>
+                        <li><a href="shop-sidebar.php">首頁</a></li>
+                        <li>員工列表</li>
                     </ol>
                 </div>
             </div>
@@ -64,23 +64,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 			$name = $Newadmin->getStaffName($id);
 			$address = $Newadmin->getStaffAddress($id);
 			$email = $Newadmin->getStaffemail($id);
+            $image = $Newadmin->getStaffimage($id);
 			echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
 			echo "<div class='container'>";
 			echo "<div class='row'>";
-			echo "<div class='col-md-12'>	";	  
-			echo "<div class='dashboard-wrapper dashboard-user-profile hover'>";
+			echo "<div class='col-md-12'>";	  
+			echo "<div class='dashboard-wrapper dashboard-user-profile'>";
 			echo "<div class='media'>";
 			echo "<div class='pull-left text-center'>";
-			echo "<img class='media-object user-img' src='images/avater.jpg' alt='Image'>";
-			echo "<a href='#x' class='btn btn-transparent mt-20'>Change Image</a>";
+            echo "<img class='media-object user-img mt-3' src='$image' alt='Image'>";
 			echo "</div>";
 			echo "<div class='media-body'>";
 			echo "<ul class='user-profile-list' id='userProfileList'>";
-			echo "<li><span>名字:$id</span><span id=userName></span></li>";
-			echo "<li><span>地址:$address</span><span id=userAddress></span></li>";
-			echo "<li><span>Email:$email</span><span id=userEmail></span></li>";
+			echo "<li><span class='h4'>名字:$name</span><span id='userName'></span></li>";
+            echo "<li><span class='h4'>地址:$address</span><span id='userAddress'></span></li>";
+            echo "<li><span class='h4'>Email:$email</span><span id='userEmail'></span></li>";
 			echo "<input type='hidden' name='user_id' value='$id'>";
-            echo "<button type='submit' class='product-remove'>移除</button>";
+            echo "<button type='submit' class='btn btn-danger'>移除</button>";
 			echo "</ul>";
 			echo "</div>";
 			echo "</div>";
@@ -135,20 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
     }
 </script>
+</body>
+</html>
 
-
-
-
-
-
-
-
-
-
-
-
-
-  </body>
-  </html>
-
-  <?php include "footer.php";?>
+<?php include "footer.php";?>

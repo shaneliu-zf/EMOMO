@@ -2,6 +2,7 @@
 ini_set('display_errors','1');
 error_reporting(E_ALL);
 require_once "db.php";
+include_once "Product.php";
 
 class Order {
     private $order_id;
@@ -12,12 +13,62 @@ class Order {
     private $arrival_date;
     private $address;
 
-    public function __construct(ShoppingCart $cart) {
-        $this->product_list = $cart->getProductList();
-        $this->status = 'Pending'; // 訂單狀態預設為待處理
-        $this->order_date = date('Y-m-d');  // 日期預設為今天
+    public function __construct($address, $user_id, $gift_code) {
+        $db = connectDB();
+        $countQuery = "SELECT COUNT(*) AS count FROM `Order_list`";
+        $countResult = mysqli_query($db, $countQuery);
+        $row = mysqli_fetch_assoc($countResult);
+        $count = $row['count'];
+        $today = date("Y-m-d");
+        $sevenDaysLater = date("Y-m-d", strtotime($today . "+7 days"));
+        $insertQuery = "INSERT INTO `Order_list` (`user_id`, `status`, `order_date`, `arrival_date`, `address`, `user_id`, `gift_code`) 
+                        VALUES ($count, 'Pending', $today, $sevenDaysLater, $address, $user_id, $gift_code)";
+        mysqli_query($db, $insertQuery);
+        mysqli_close($db);
     }
 
+    public function checkOut($order_id, $user_id, $product_id) {
+        $flag = false;
+        $db = connectDB();
+        $countQuery = "SELECT COUNT(*) AS count FROM `Ordered_product_list`";
+        $countResult = mysqli_query($db, $countQuery);
+        $row = mysqli_fetch_assoc($countResult);
+        $count = $row['count'];
+        $insertQuery = "INSERT INTO `Ordered_product_list` (`id`, `order_id`, `user_id`, `product_id`, `amount`) 
+                        VALUES ($count, $order_id, $user_id, $product_id, 1)";
+        $insertResult = mysqli_query($db, $insertQuery);
+        if($insertResult !== false){
+            $flag = true;
+        }
+        mysqli_close($db);
+        return $flag;
+    }
+
+    public  function updateAmount($order_id, $user_id, $product_id) {
+        $db = connectDB();
+        $sql = "UPDATE `Ordered_product_list` SET `amount` = `amount` + 1 WHERE `order_id` = '$order_id' AND `user_id` = '$user_id' AND `product_id` = '$product_id'";
+        $result = mysqli_query($db,$sql);
+        mysqli_close($db);
+    }
+
+    public  function isExist($order_id, $user_id, $product_id) {
+        $db = connectDB();
+        $sql = "SELECT * FROM `Ordered_product_list` WHERE `order_id` = '$order_id' AND `user_id` = '$user_id' AND `product_id` = '$product_id'";
+        $result = mysqli_query($db,$sql);
+        mysqli_close($db);
+        return $result;
+    }
+
+    public static function getCount(){
+        $db = connectDB();
+        $sql = "SELECT COUNT(*) AS count FROM `Order_list`";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $count = $row['count'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $count;
+    }
 
     public static function getStatusbyID($id){
         $db = connectDB();
@@ -68,7 +119,7 @@ class Order {
         $sql = "SELECT * FROM `Order_list` WHERE `id` = $id";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_assoc($result);
-        $address = $row['price'];
+        $price = $row['price'];
         mysqli_free_result($result);
         mysqli_close($db);
         return $price;
@@ -91,11 +142,19 @@ class Order {
         }
     }
 
-    public function submitOrder($address) {
-        $this->status = 'Submitted';
-        $this->address = $address;
-        $this->arrival_date = date('Y-m-d', strtotime('+7 days'));
-        echo "Order submitted successfully.\n";
+    public static function changeStatus($id, $status) {
+        $db = connectDB();
+        $sql = "UPDATE `Order_list` SET `status` = '$status' WHERE `id` = '$id'";
+        $result = mysqli_query($db,$sql);
+        mysqli_close($db);
+    }
+
+    public static function updateArrivalDate($id) {
+        $db = connectDB();
+        $today = date("Y-m-d");
+        $sql = "UPDATE `Order_list` SET `arrival_date` = '$today' WHERE `id` = '$id'";
+        $result = mysqli_query($db,$sql);
+        mysqli_close($db);
     }
 
     public static function getOrderDetails($user_id) {
@@ -122,6 +181,78 @@ class Order {
             echo "無任何商品";
             mysqli_close($db);
         }
+    }
+
+    public static function getOrderSingleItemsCount($order_id,$user_id,$product_id) {
+        $db = connectDB();
+        $checkQuery = "SELECT * FROM `Ordered_product_list` WHERE `user_id` = '$user_id' AND `order_id` = '$order_id' AND `product_id` = '$product_id'";
+        $checkResult = mysqli_query($db, $checkQuery);
+        $row = mysqli_fetch_assoc($checkResult);
+        $amount = $row['amount'];
+        mysqli_free_result($checkResult);
+        mysqli_close($db);
+        return $amount;
+    }
+
+    public static function getPriceOfOrder($order_id){
+        $db = connectDB();
+        $check2 = "SELECT `product_id` FROM `Ordered_product_list` WHERE `order_id` = '$order_id'";
+        $checkResult2 = mysqli_query($db, $check2);
+        $total_price = 0;
+    
+        while ($row = mysqli_fetch_assoc($checkResult2)){
+            $total_price += Product::getPricebyID($row['product_id']);
+        }
+    
+        mysqli_free_result($checkResult2);
+        mysqli_close($db);
+        return $total_price;
+    }
+    
+    public static function getPriceArrayOfChart(){
+        $db = connectDB();
+        $check = "SELECT DISTINCT `order_id` FROM `Ordered_product_list`";
+        $checkResult = mysqli_query($db, $check);
+        $products = array(); // 初始化数组
+    
+        while ($row = mysqli_fetch_assoc($checkResult)) {
+            $order_id = $row['order_id'];
+            $product = array(
+                'date' => self::getOrderDatebyID($order_id),
+                'price' => self::getPriceOfOrder($order_id),
+                // 添加其他字段...
+            );
+            $products[] = $product;
+        }
+    
+        usort($products, array('self', 'compareDates'));
+        mysqli_free_result($checkResult);
+        mysqli_close($db);
+        return $products;
+    }
+    
+
+    public static function getProductSalesArrayOfChart(){
+        $db = connectDB();
+        for ($i = 0; $i < Product::getAmount();$i++){
+            $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Ordered_product_list` WHERE `product_id` = '$i'";
+            $result = mysqli_query($db,$checkCount);
+            $row = mysqli_fetch_assoc($result);
+            $count = $row['TotalItems'];
+            $product = array(
+                'id' => $i,
+                'num' => $count,
+                // 添加其他字段...
+            );
+            $products[] = $product;
+            mysqli_free_result($result);
+        }
+        mysqli_close($db);
+        return $products;
+    }
+
+    public static function compareDates($a, $b) {
+        return strtotime($a['date']) - strtotime($b['date']);
     }
 }
 

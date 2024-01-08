@@ -14,11 +14,11 @@ class Coupon{
     private $rule; // 100 、 5
     private $discount_mode;  // minus 、 percent
     private $discount;
-    private $repeatedCode;
 
     function __construct(){}
 
-    public function createNewCoupon($name,$code,$rule,$discount,$date){
+    public function createNewCoupon($name,$code,$discountmode,$discount,$date,$rule,$rule_mode){
+        $repeat = false;
         $db = connectDB();
         $checkQuery = "SELECT COUNT(*) as count FROM `Coupon_list` WHERE `giftcode` = '$code'";
         $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Coupon_list`";
@@ -30,17 +30,17 @@ class Coupon{
             $row = mysqli_fetch_assoc($checkResult);
             $count = $row['count'];
             if ($count == 0) {
-                $this->repeatedCode = false;
+                $repeat = false;
                 // 不存在相同的 user_id，執行插入操作
 
-                $insertQuery = "INSERT INTO `Coupon_list` (`id`, `name`, `giftcode`, `date` , `rule` , `discount`)
-                 VALUES ($id, '$name', '$code', '$date' , '$rule', '$discount')";
+                $insertQuery = "INSERT INTO `Coupon_list` (`id`, `name`, `giftcode`, `date` , `rule_mode` , `rule` , `discount_mode`, `discount`)
+                 VALUES ($id, '$name', '$code', '$date' , '$rule_mode' ,'$rule', '$discountmode','$discount')";
 
                  
                 $insertResult = mysqli_query($db, $insertQuery);
             }
             else{
-                $this->repeatedCode = true;
+                $repeat = true;
             }
             // 釋放資源
             mysqli_free_result($checkResult);
@@ -48,6 +48,7 @@ class Coupon{
         }
         // 關閉資料庫連接
         mysqli_close($db);
+        return $repeat;
     }
 
     public function getCouponId(){
@@ -102,6 +103,17 @@ class Coupon{
         return $rule;
     }
 
+    public function getCouponRuleMode($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Coupon_list` WHERE `id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $rule_mode = $row['rule_mode'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $rule_mode;
+    }
+
     public function getCouponDiscount($id){
         $db = connectDB();
         $sql = "SELECT * FROM `Coupon_list` WHERE `id` = $id";
@@ -112,4 +124,50 @@ class Coupon{
         mysqli_close($db);
         return $discount;
     }
+
+    public function getCouponDiscountMode($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Coupon_list` WHERE `id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $discount_mode = $row['discount_mode'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $discount_mode;
+    }
+
+    public static function checkIfCanUse($name,$total_price,$user_id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Coupon_list` WHERE `giftcode` = '$name'";
+        $sql2 = "SELECT COUNT(*) AS TotalItems FROM `ShoppingCart` WHERE `user_id` = '$user_id'";
+        $result2 = mysqli_query($db,$sql2);
+        $row2 = mysqli_fetch_assoc($result2);
+        $num = $row2['TotalItems'];
+        $result = mysqli_query($db,$sql);
+        while ($row = mysqli_fetch_assoc($result)){
+            if($row['rule_mode'] == "sum"){
+                if($total_price >= $row['rule']){
+                    if ($row['discount_mode'] == "minus"){
+                        $total_price -= $row['discount'];
+                    }
+                    else{
+                        $total_price *= $row['discount'];
+                    }
+                }
+            }
+            else{
+                if($num >= $row['rule']){
+                    if ($row['discount_mode'] == "minus"){
+                        $total_price -= $row['discount'];
+                    }
+                    else{
+                        $total_price *= $row['discount'];
+                    }
+                }
+            }
+        }
+        return $total_price;
+    }
+
+
 }
