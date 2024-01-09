@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                 <div class="content">
                     <h1 class="page-name">優惠卷</h1>
                     <ol class="breadcrumb">
-                        <li><a href="shop-sidebar.php">首頁</a></li>
+                        <li><a href="index.php">首頁</a></li>
                         <li class="active">優惠卷</li>
                     </ol>
                 </div>

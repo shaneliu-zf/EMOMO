@@ -27,7 +27,46 @@ class User{
         $checkCountResult = mysqli_query($db,$checkCount);
         $row = mysqli_fetch_assoc($checkCountResult);
         $count = $row['TotalItems'];
-        $this->user_id = $count;
+        $finalNumberQuery = "SELECT * FROM `User_list` ORDER BY `user_id` DESC LIMIT 0, 1";
+        $getfinalNumber  = mysqli_query($db, $finalNumberQuery);
+        if ($getfinalNumber) {
+            $row = mysqli_fetch_assoc($getfinalNumber);
+            $final = $row['user_id'];
+        } 
+        else {
+            echo "Error: " . mysqli_error($db);
+        }
+        if($final == ($count - 1)){
+            $this->user_id = $count;
+        }
+        else{
+            $missNumber = "SELECT product_id + 1 AS missing_id
+                            FROM Product_list
+                            WHERE NOT EXISTS (
+                                SELECT 1
+                                FROM Product_list P
+                                WHERE P.product_id = Product_list.product_id + 1
+                            )
+                            ORDER BY product_id
+                            LIMIT 1";
+
+            $getMissNumber = mysqli_query($db, $missNumber);
+            
+            if ($getMissNumber) {
+                // 檢查結果集是否存在
+                if ($row = mysqli_fetch_assoc($getMissNumber)) {
+                    $miss = $row['missing_id'];
+                    $this->user_id = $miss;
+                } 
+                else {
+                    echo "No missing number found.";
+                }
+            } 
+            else {
+                // 處理 mysqli_query 失敗的情況
+                echo "Error: " . mysqli_error($db);
+            }
+        }
         $checkResult = mysqli_query($db, $checkQuery);
         if ($checkResult) {
             $row = mysqli_fetch_assoc($checkResult);

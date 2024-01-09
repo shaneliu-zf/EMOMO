@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
     $flag = $Newcart->addItem($number,$product_id,$user_id);
     if($flag){
       echo "<script>alert('新增成功');</script>";
-      echo "<script>window.location.href = '/shop-sidebar.php';</script>";
+      echo "<script>window.location.href = '/index.php';</script>";
     }
     else{
       echo "<script>alert('新增失敗，請重試');</script>";

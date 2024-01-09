@@ -22,12 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $User->editUser($_COOKIE['user_id'],$newName,$newPassword,$newAddress);
             $response = ['status' => 'success'];
             echo json_encode($response);
-        } 
+        }
         else{
             http_response_code(400);
             echo 'Bad Request';
         }
-    } 
+    }
     else if (isset($_FILES['image'])) {
         $input_image = $_FILES['image']['name'];
         $image_array = explode('.', $input_image);
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $User->changeImage($_COOKIE['user_id'],$image);
         $response = ['status' => 'success'];
         echo json_encode($response);
-    } 
+    }
     else {
         http_response_code(400);
         echo 'Bad Request';
@@ -97,8 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 								$email = $NewUser->getEmail($user_id);
 								$address = $NewUser->getAddress($user_id);
                                 $image = $NewUser->getImage($user_id);
-								echo 
-                                "<img class='img-circle' src='$image' alt='Image' >
+								echo
+                                "<img class='img-circle' src='$image' alt='Image' style='width: 230px; height: 230px;'>
                                     </div>
                                 </div>
                                 <div class='col-md-6 d-flex align-items-center'>
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="modal-dialog modal-lg" role="document" aria-modal="true">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h3 class="modal-title" id="changeImageModalLabel">Change Image</h3>
+                <h3 class="modal-title" id="changeImageModalLabel">更換圖片</h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -135,15 +135,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- 添加上传照片的表单 -->
                 <form id="uploadForm">
                     <div class="form-group">
-                        <label for="photoUpload">Upload Photo:</label>
+                        <label for="photoUpload">上傳照片:</label>
                         <input type="file" class="form-control" id="photoUpload" accept="image/*">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                 <!-- 添加保存更改按钮 -->
-                <button type="button" class="btn btn-primary" onclick="changeImage()">Save Changes</button>
+                <button type="button" class="btn btn-primary" onclick="changeImage()">儲存</button>
             </div>
         </div>
     </div>

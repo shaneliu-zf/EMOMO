@@ -11,49 +11,15 @@ class Product{
     public function saveProduct($name,$price,$description,$image){
         $db = connectDB();
         $checkQuery = "SELECT COUNT(*) as count FROM `Product_list` WHERE `name` = '$name'";
-        $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Product_list`";
+        $checkCount = "SELECT * FROM `Product_list` ORDER BY `product_id` DESC LIMIT 0, 1";
         $checkCountResult = mysqli_query($db,$checkCount);
-        $row = mysqli_fetch_assoc($checkCountResult);
-        $count = $row['TotalItems'];
-        $finalNumberQuery = "SELECT * FROM `Product_list` ORDER BY `product_id` DESC LIMIT 0, 1";
-        $getfinalNumber  = mysqli_query($db, $finalNumberQuery);
-        if ($getfinalNumber) {
-            $row = mysqli_fetch_assoc($getfinalNumber);
-            $final = $row['product_id'];
+        if ($row = mysqli_fetch_assoc($checkCountResult)) {
+            // 當有資料時，取得第一個商品的 product_id
+            $firstProductId = $row['product_id'];
+            $id = $firstProductId + 1;
         } 
         else {
-            echo "Error: " . mysqli_error($db);
-        }
-        if($final == ($count - 1)){
-            $id = $count;
-        }
-        else{
-            $missNumber = "SELECT product_id + 1 AS missing_id
-                            FROM Product_list
-                            WHERE NOT EXISTS (
-                                SELECT 1
-                                FROM Product_list P
-                                WHERE P.product_id = Product_list.product_id + 1
-                            )
-                            ORDER BY product_id
-                            LIMIT 1";
-
-            $getMissNumber = mysqli_query($db, $missNumber);
-
-            if ($getMissNumber) {
-                // 檢查結果集是否存在
-                if ($row = mysqli_fetch_assoc($getMissNumber)) {
-                    $miss = $row['missing_id'];
-                    $id = $miss;
-                } 
-                else {
-                    echo "No missing number found.";
-                }
-            } 
-            else {
-                // 處理 mysqli_query 失敗的情況
-                echo "Error: " . mysqli_error($db);
-            }
+            echo "沒有商品資料";
         }
         $checkResult = mysqli_query($db, $checkQuery);
         if ($checkResult) {

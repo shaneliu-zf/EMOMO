@@ -15,7 +15,7 @@
 						<a href="opinion-sheet.php">客服</a>
 					</li>
 					<li>
-						<a href="shop-sidebar.php">購物</a>
+						<a href="index.php">購物</a>
 					</li>
 				</ul>
 				<p class="copyright-text">Copyright &copy;2023, Designed &amp; Developed by NTUT_CSIE_DS_10</p>

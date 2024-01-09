@@ -53,7 +53,7 @@ class Coupon{
 
     public function getCouponId(){
         $db = connectDB();
-        $sql = "SELECT `id` FROM `Coupon_list`";
+        $sql = "SELECT `id` FROM `Coupon_list` ORDER BY `date` DESC";
         $result = mysqli_query($db,$sql);
         mysqli_close($db);
         return $result;
@@ -136,6 +136,20 @@ class Coupon{
         return $discount_mode;
     }
 
+    public static function discount($price, $gift_code){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Coupon_list` WHERE `giftcode` = '$gift_code'";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        if ($row['discount_mode'] == "minus"){
+            $price -= $row['discount'];
+        }
+        else{
+            $price *= $row['discount'];
+        }
+        return $price;
+    }
+
     public static function checkIfCanUse($name,$total_price,$user_id){
         $db = connectDB();
         $sql = "SELECT * FROM `Coupon_list` WHERE `giftcode` = '$name'";
@@ -152,6 +166,7 @@ class Coupon{
                     }
                     else{
                         $total_price *= $row['discount'];
+                        $total_price /= 100;
                     }
                 }
             }
@@ -162,6 +177,7 @@ class Coupon{
                     }
                     else{
                         $total_price *= $row['discount'];
+                        $total_price /= 100;
                     }
                 }
             }

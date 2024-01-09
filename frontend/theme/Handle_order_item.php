@@ -22,7 +22,11 @@ function getItemList($order_id, $user_id)
     while ($row = mysqli_fetch_assoc($item_set)) {
         $id = $row['product_id'];
         $product = array(
+            'arrival_date' => Order::getArrivalDatebyID($order_id),
+            'address' => Order::getAddressbyID($order_id),
+            'gift_code' => Order::getGiftCodebyID($order_id),
             'name' => Product::getNamebyID($id),
+            'amount' => Order::getOrderSingleItemsCount($order_id, $user_id, $id),
             'price' => Product::getPricebyID($id)
             // 添加其他字段...
         );

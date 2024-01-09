@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
   if($result[0]){
     setcookie("user_id", $result[1], 0, "/");
     echo "<script>alert('登入成功');</script>";
-    echo "<script>window.location.href = '/shop-sidebar.php';</script>";
+    echo "<script>window.location.href = '/index.php';</script>";
     ob_end_flush();
   }
   else{
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="block text-center">
-          <a class="logo" href="shop-sidebar.php">
+          <a class="logo" href="index.php">
             <h1>EMOMO</h1>
           </a>
           <h2 class="text-center">登入帳號</h2>

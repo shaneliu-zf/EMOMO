@@ -21,8 +21,8 @@ class Order {
         $count = $row['count'];
         $today = date("Y-m-d");
         $sevenDaysLater = date("Y-m-d", strtotime($today . "+7 days"));
-        $insertQuery = "INSERT INTO `Order_list` (`user_id`, `status`, `order_date`, `arrival_date`, `address`, `user_id`, `gift_code`) 
-                        VALUES ($count, 'Pending', $today, $sevenDaysLater, $address, $user_id, $gift_code)";
+        $insertQuery = "INSERT INTO `Order_list` (`id`, `status`, `order_date`, `arrival_date`, `address`, `user_id`, `gift_code`) 
+                VALUES ('$count', 'Pending', '$today', '$sevenDaysLater', '$address', '$user_id', '$gift_code')";
         mysqli_query($db, $insertQuery);
         mysqli_close($db);
     }
@@ -55,8 +55,9 @@ class Order {
         $db = connectDB();
         $sql = "SELECT * FROM `Ordered_product_list` WHERE `order_id` = '$order_id' AND `user_id` = '$user_id' AND `product_id` = '$product_id'";
         $result = mysqli_query($db,$sql);
+        $exists = mysqli_num_rows($result) > 0;
         mysqli_close($db);
-        return $result;
+        return $exists;
     }
 
     public static function getCount(){
@@ -125,6 +126,17 @@ class Order {
         return $price;
     }
 
+    public static function getGiftCodebyID($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Order_list` WHERE `id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $gift_code = $row['gift_code'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $gift_code;
+    }
+
     public static function addCoupon(Coupon $coupon, $sum) {
         if ((($coupon->getRule_mode() == 'sum') && ($sum >= $coupon->getRule())) || (($coupon->getRule_mode() == 'amount') && (count($this->product_list) >= $coupon->getRule()))){
             if($coupon->getDiscount_mode() == 'minus'){
@@ -160,6 +172,19 @@ class Order {
     public static function getOrderDetails($user_id) {
         $db = connectDB();
         $checkQuery = "SELECT * FROM `Order_list` WHERE user_id = $user_id";
+        if ($checkResult = mysqli_query($db, $checkQuery)) {
+            mysqli_close($db);
+            return $checkResult;
+        }
+        else {
+            echo "無任何商品";
+            mysqli_close($db);
+        }
+    }
+
+    public static function getAllOrderDetails() {
+        $db = connectDB();
+        $checkQuery = "SELECT * FROM `Order_list`";
         if ($checkResult = mysqli_query($db, $checkQuery)) {
             mysqli_close($db);
             return $checkResult;

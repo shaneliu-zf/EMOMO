@@ -52,7 +52,18 @@ class ShoppingCart {
         // Assuming your table has a primary key named 'id'
         $deleteQuery = "DELETE FROM `ShoppingCart` WHERE `product_id` = $product_id";
 
-        $result = mysqli_query($db, $deleteQuery);
+        mysqli_query($db, $deleteQuery);
+
+        mysqli_close($db);
+    }
+
+    public function removeAll($user_id) {
+        $db = connectDB();
+
+        // Assuming your table has a primary key named 'id'
+        $deleteQuery = "DELETE FROM `ShoppingCart` WHERE `user_id` = $user_id";
+
+        mysqli_query($db, $deleteQuery);
 
         mysqli_close($db);
     }
@@ -106,14 +117,9 @@ class ShoppingCart {
     public function getAllProduct($user_id){
         $db = connectDB();
         $Query = "SELECT * FROM `ShoppingCart` WHERE `user_id` = '$user_id'";
-        if ($Result = mysqli_query($db,$Query)) {
-            mysqli_close($db);
-            return $Result;
-        }
-        else {
-            echo "無任何商品";
-            mysqli_close($db);
-        }
+        $Result = mysqli_query($db,$Query);
+        mysqli_close($db);
+        return $Result;
     }
 
     public function getProductPrice($product_id){

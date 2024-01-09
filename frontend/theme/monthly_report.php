@@ -18,6 +18,27 @@ $json_num = json_encode($num);
     <title>銷售統計圖表</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        .total-price {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        #totalPriceDisplay {
+            font-weight: bold;
+            color: #e44d26; /* 或者你喜欢的颜色 */
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+        .total-price {
+            white-space: nowrap; /* 防止文字換行 */
+        }
         .chart-header {
             font-family: 'Arial', sans-serif;
             font-size: 36px;
@@ -82,11 +103,15 @@ $json_num = json_encode($num);
 
     <!-- 创建一个 canvas 元素用于显示折线图 -->
     <div class="chart-container container">
-        <h1 class="chart-header">逐月銷售訂單數量</h1>
+        <div class="header-container">
+            <h1 class="chart-header">逐月銷售訂單數量</h1>
 
-
+            <!-- 新增顯示價錢的文字元素 -->
+            <div class="total-price">
+                <strong>總價:</strong><span id="totalPriceDisplay">0</span>
+            </div>
+        </div>
         <!-- 月份選擇器 -->
-
         <div class="month-selector">
             <button onclick="adjustMonth(-1)">←</button>
             <div class="current-month">
@@ -95,11 +120,19 @@ $json_num = json_encode($num);
             </div>  
             <button onclick="adjustMonth(1)">→</button>
         </div>
-
         <canvas id="lineChart1"></canvas>
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 在網頁載入時計算總和並更新顯示
+            updateTotalPrice();
+        });
+        function updateTotalPrice() {
+            var jsonDataa =jsonData.map(item => item.price);  // 請確保 jsonData 包含要計算的數據
+            var totalPrice = calculateTotal(jsonDataa);
+            document.getElementById('totalPriceDisplay').textContent = totalPrice;
+        }
         function adjustMonth(direction) {
         // 取得目前的月份值
         var monthRange = document.getElementById('monthRange');
@@ -149,16 +182,42 @@ $json_num = json_encode($num);
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
                     fill: false
+                    
                 }]
             },
             options: {
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "日期",
+                            font: {
+                                size: 36,
+                                weight: 'bold',
+                                family: 'Arial, sans-serif'
+                            }
+                        }
+                    },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text:"價錢", 
+                            font: {
+                                size: 36,
+                                weight: 'bold', // 加粗
+                                family: 'Arial, sans-serif' // 
+                            }
+                        }
                     }
                 }
             }
         });
+        function calculateTotal(data) {
+            var total = 0;
+            total = data.reduce((acc, val) => acc + val, 0);
+            return total;
+        }
     </script>
 
     <div class="chart-container container">
@@ -185,16 +244,34 @@ $json_num = json_encode($num);
                 }]
             },
             options: {
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                    },
-                    y: {
-                        beginAtZero: true
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: '商品名稱',
+                        font: {
+                                size: 36,
+                                weight: 'bold',
+                                family: 'Arial, sans-serif'
+                            }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '數量',
+                        font: {
+                                size: 36,
+                                weight: 'bold',
+                                family: 'Arial, sans-serif'
+                            }
                     }
                 }
             }
+        }
         });
     </script>
 

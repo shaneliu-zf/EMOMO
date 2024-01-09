@@ -3,6 +3,7 @@ ini_set('display_errors','1');
 error_reporting(E_ALL);
 require_once "header.php";
 require_once "../../backend/Order.php";
+require_once "../../backend/Product.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 確保有 action 參數
@@ -21,6 +22,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Order::changeStatus($id,$newStatus);
             $response = ['status' => 'success'];
             echo json_encode($response);
+        } 
+		else if ($action === 'detail') {
+            // 獲取 POST 數據
+			$orderId = $_POST['orderId'];
+			$user_id = $_COOKIE['user_id'];
+			$itemDetails = array();
+			$address = Order::getAddressbyID($orderId);
+			$Items = Order::getOrderitems($id, $user_id);
+			while ($row = mysqli_fetch_row($Items)) {
+				$name = Product::getNamebyID($row[3]);
+				$amount = Order::getOrderSingleItemsCount($id, $user_id, $row[3]);
+				$price = Product::getpricebyID($row[3]);
+			
+				$itemDetails[] = array(
+					'name' => $name,
+					'amount' => $amount,
+					'price' => $price
+				);
+			}
+			$responseData = array(
+				'status' => 'success',
+				'address' => $address,
+				'itemDetails' => $itemDetails
+			);
+			echo json_encode($responseData);
         } 
         else{
             http_response_code(400);
@@ -41,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<div class="content">
 					<h1 class="page-name">我的訂單</h1>
 					<ol class="breadcrumb">
-						<li><a href="shop-sidebar.php">首頁</a></li>
+						<li><a href="index.php">首頁</a></li>
 						<li class="active">我的訂單</li>
 					</ol>
 				</div>
@@ -80,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 								<tr>
 									<th>Order ID</th>
 									<th>Date</th>
-									<th>Items</th>
+									<th>Amount</th>
 									<th>Total Price</th>
 									<th>Status</th>
 									<th></th>
@@ -93,9 +119,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 									error_reporting(E_ALL);
 									include_once "../../backend/Order.php";
 									include_once "../../backend/Product.php";
+									include_once "../../backend/User.php";
+									include_once "../../backend/Coupon.php";
 
 									if (isset($_COOKIE['user_id'])){
-										$order_list = Order::getOrderDetails($_COOKIE["user_id"]);
+										if(User::isAdmin($_COOKIE['user_id']) || User::isStaff($_COOKIE['user_id'])){
+											$order_list = Order::getAllOrderDetails();
+										}
+										else{
+											$order_list = Order::getOrderDetails($_COOKIE["user_id"]);
+										}
 										while ($row=mysqli_fetch_row($order_list)){
 											$id = $row[0];
 											$status = $row[1];
@@ -109,7 +142,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 											$total_price = 0;
 											while ($row=mysqli_fetch_row($Items)){
 												$count += $row[4];
-												$total_price += Product::getPricebyID($row[3]);
+												$total_price += (Product::getPricebyID($row[3]) * $row[4]);
+											}
+											if($gift_code != "NULL"){
+												$total_price = Coupon::discount($total_price, $gift_code);
 											}
 											switch ($status) {
 												case "Completed":
@@ -251,62 +287,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             status: $tr.find('td:eq(4) span').text()
         };
 
-        // 檢查是否已存在相同的模態框，如果存在則刪除
-        $('#orderDetailsModal').remove();
+		$.ajax({
+			type: 'POST',
+			url: 'Handle_order_item.php',
+			data: {
+				orderId: orderId,
+				user_id: <?php echo json_encode($_COOKIE['user_id']) ?>
+			},
+			success: function(response) {
+				var responseData = JSON.parse(response);
 
-        // 將資料填充至模態框中
-        var modalContent = `
-            <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Order Details - ${orderData.orderId}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p><strong>Order ID:</strong> ${orderData.orderId}</p>
-                            <p><strong>Order Date:</strong> ${orderData.order_date}</p>
-                            <p><strong>Amount:</strong> ${orderData.amount}</p>
-                            <p><strong>Total Price:</strong> ${orderData.totalPrice}</p>
-                            <p><strong>Status:</strong> ${orderData.status}</p>
-							<?php
-								ini_set('display_errors','1');
-								error_reporting(E_ALL);
-								include_once "../../backend/Order.php";
-								include_once "../../backend/Product.php";
+				// 檢查是否已存在相同的模態框，如果存在則刪除
+				$('#orderDetailsModal').remove();
 
-								if ($_SERVER['REQUEST_METHOD'] == "POST"){
-									$id = $_POST['id'];
-									$address = Order::getAddressbyID($orderId);
-								}
-								echo "<p><strong>Address:</strong>$address</p>";
-								echo "<hr><p><strong>Ordered Items:</strong></p><ul>";
-								$user_id = $_COOKIE['user_id'];
-								$Items = Order::getOrderitems($id, $user_id);
-								while ($row=mysqli_fetch_row($Items)){
-									$name = Product::getNamebyID($row[3]);
-									$amount = Order::getOrderSingleItemsCount($id, $user_id, $row[3]);
-									$price = Product::getpricebyID($row[3]);
-									echo "<li>$name - $amount * $$price</li>";
-								}
-							?>
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+				// 將資料填充至模態框中
+				var modalContent = `
+					<div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Order Details - ${responseData[0].orderId}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p><strong>Order ID:</strong> ${orderData.orderId}</p>
+									<p><strong>Order Date:</strong> ${orderData.order_date}</p>
+                    				${orderData.status === 'Completed' ? `<p><strong>Arrival Date:</strong> ${responseData[0].arrival_date}</p>` : ''}
+									<p><strong>Amount:</strong> ${orderData.amount}</p>
+									<p><strong>Total Price:</strong> ${orderData.totalPrice}</p>
+									<p><strong>Status:</strong> ${orderData.status}</p>
+									<p><strong>Address:</strong> ${responseData[0].address}</p>
+									${responseData[0].gift_code === 'NULL' ? '' : `<p><strong>Gift Code:</strong> ${responseData[0].gift_code}</p>`}
+									<hr>
+									<p><strong>Ordered Items:</strong></p>
+									<ul>
+										${responseData.map(item => `<li>${item.name} - ${item.amount} * $${item.price}</li>`).join('')}
+									</ul>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				`;
 
-        // 將模態框的 HTML 添加到頁面中
-        $('body').append(modalContent);
+				// 將模態框內容添加到 body 中
+				$('body').append(modalContent);
 
-        // 顯示模態框
-        $('#orderDetailsModal').modal('show');
+				// 手動顯示模態框
+				$('#orderDetailsModal').modal('show');
+			},
+			error: function(error) {
+				console.error('Error:', error);
+			}
+		});
     }
 </script>
 

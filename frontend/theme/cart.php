@@ -7,31 +7,36 @@ include_once "../../backend/Order.php";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
   if(isset($_POST['checkout'])){
-    $NewUser = new User();
-    $user_id = $_COOKIE['user_id'];
-    $address = $NewUser->getAddress($user_id);
-    if(isset($_COOKIE['coupon'])){
-      $NewOrder = new Order($address, $user_id, $_COOKIE['coupon']);
-    }
-    else{
-      $NewOrder = new Order($address, $user_id, NULL);
-    }
-    $order_id = Order::getCount() - 1;
-
     $NewCart = new ShoppingCart();
     $Result = $NewCart->getAllProduct($user_id);
-    while($row=mysqli_fetch_row($Result)){
-      $product_id = $row['product_id'];
-      if($NewOrder->isExist($order_id, $user_id, $product_id)){
-        $NewOrder->updateAmount($order_id, $user_id, $product_id);
+    if(mysqli_num_rows($Result) > 0){
+      $NewUser = new User();
+      $user_id = $_COOKIE['user_id'];
+      $address = $NewUser->getAddress($user_id);
+      if(isset($_COOKIE['coupon'])){
+        $NewOrder = new Order($address, $user_id, $_COOKIE['coupon']);
       }
       else{
-        $NewOrder->checkOut($order_id, $user_id, $product_id);
+        $NewOrder = new Order($address, $user_id, 'NULL');
       }
+      $order_id = Order::getCount() - 1;
+  
+      while($row=mysqli_fetch_row($Result)){
+        $product_id = $row[1];
+        if($NewOrder->isExist($order_id, $user_id, $product_id)){
+          $NewOrder->updateAmount($order_id, $user_id, $product_id);
+        }
+        else{
+          $NewOrder->checkOut($order_id, $user_id, $product_id);
+        }
+      }
+      $NewCart->removeAll($user_id);
+      setcookie($coupon, '', time() - 3600, '/');
+      echo "<script>alert('結帳成功');</script>";
     }
-    $NewCart->removeAllItem($user_id);
-    echo "<script>alert('結帳成功');</script>";
-    echo "<script>window.location.href = '/order.php';</script>";
+    else{
+      echo "<script>alert('結帳失敗');</script>";
+    }
   }
   else{
     $NewCart = new ShoppingCart();
@@ -59,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 				<div class="content">
 					<h1 class="page-name">購物車</h1>
 					<ol class="breadcrumb">
-						<li><a href="shop-sidebar.php">首頁</a></li>
+						<li><a href="index.php">首頁</a></li>
 						<li class="active">購物車</li>
 					</ol>
 				</div>

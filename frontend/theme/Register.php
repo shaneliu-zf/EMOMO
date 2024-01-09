@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="block text-center">
-          <a class="logo" href="shop-sidebar.php">
+          <a class="logo" href="index.php">
             <h1>EMOMO</h1>
           </a>
           <h2 class="text-center">建立帳號</h2>
