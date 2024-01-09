@@ -4,8 +4,8 @@ include_once "../../backend/Order.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 获取 user_id 和 order_id
-    $user_id = $_POST['user_id'];
     $order_id = $_POST['orderId'];
+    $user_id = Order::getUserIDbyID($order_id);
 
     $item_set = getItemList($order_id, $user_id);
 

@@ -30,7 +30,12 @@
   <!-- Themefisher Icon font -->
   <link rel="stylesheet" href="plugins/themefisher-font/style.css">
   <!-- bootstrap.min css -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <?php
+    //echo "<script>alert('".$_SERVER['PHP_SELF']."')</script>";
+    if($_SERVER['PHP_SELF']!='/index.php'){
+        echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">';
+    }
+  ?>
   <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
 
   <!-- Animate css -->
@@ -82,14 +87,15 @@
 					<!-- Cart -->
 					<li class="dropdown cart-nav dropdown-slide">
 						<?php
+						include_once "../../backend/Product.php";
 						if (isset($_COOKIE['user_id'])){
 							echo "<a href='cart.php' data-hover='dropdown'><i class='tf-ion-android-cart'></i> 購物車</a>";
 							echo "<div class='dropdown-menu cart-dropdown'>";
 							$total_price = 0;
 							$NewCart = new ShoppingCart();
 							$user_id = $_COOKIE['user_id'];
-							$number = $NewCart->getNumInProduct();
-							for ($i = 0;$i < $number;$i++){
+							$number = Product::getMax();
+							for ($i = 0;$i < $number+1;$i++){
 								$count = $NewCart->checkIfInCart($user_id,$i);
 								if($count != 0){
 									$name = $NewCart->getProductName($i);
@@ -209,6 +215,7 @@
 							echo "<ul>";
 							echo "<li><a href='/add-product.php'>新增商品</a></li>";
 							echo "<li><a href='/add-coupon.php'>新增優惠券</a></li>";
+                            echo "<li><a href='/coupon-list.php'>優惠卷列表</a></li>";
 							echo "<li><a href='/feedback.php'>用戶回饋</a></li>";
 							echo "</ul>";
 							echo "</div><!-- / .dropdown-menu -->";
@@ -221,6 +228,7 @@
 							echo "role='button' aria-haspopup='true' aria-expanded='false'>主管專區<span class='tf-ion-ios-arrow-down'></span></a>";
 							echo "<div class='dropdown-menu'>";
 							echo "<ul>";
+                            echo "<li><a href='user-list.php'> 帳號列表 </a></li>";
 							echo "<li><a href='employee-list.php'> 員工列表 </a></li>";
 							echo "<li><a href='monthly_report.php'> 數據分析 </a></li>";
 							echo "</ul>";

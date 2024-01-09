@@ -21,7 +21,7 @@ class Order {
         $count = $row['count'];
         $today = date("Y-m-d");
         $sevenDaysLater = date("Y-m-d", strtotime($today . "+7 days"));
-        $insertQuery = "INSERT INTO `Order_list` (`id`, `status`, `order_date`, `arrival_date`, `address`, `user_id`, `gift_code`) 
+        $insertQuery = "INSERT INTO `Order_list` (`id`, `status`, `order_date`, `arrival_date`, `address`, `user_id`, `gift_code`)
                 VALUES ('$count', 'Pending', '$today', '$sevenDaysLater', '$address', '$user_id', '$gift_code')";
         mysqli_query($db, $insertQuery);
         mysqli_close($db);
@@ -34,7 +34,7 @@ class Order {
         $countResult = mysqli_query($db, $countQuery);
         $row = mysqli_fetch_assoc($countResult);
         $count = $row['count'];
-        $insertQuery = "INSERT INTO `Ordered_product_list` (`id`, `order_id`, `user_id`, `product_id`, `amount`) 
+        $insertQuery = "INSERT INTO `Ordered_product_list` (`id`, `order_id`, `user_id`, `product_id`, `amount`)
                         VALUES ($count, $order_id, $user_id, $product_id, 1)";
         $insertResult = mysqli_query($db, $insertQuery);
         if($insertResult !== false){
@@ -81,7 +81,18 @@ class Order {
         mysqli_close($db);
         return $status;
     }
-    
+
+    public static function getUserIDbyID($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `Order_list` WHERE `id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $user_id = $row['user_id'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $user_id;
+    }
+
     public static function getOrderDatebyID($id){
         $db = connectDB();
         $sql = "SELECT * FROM `Order_list` WHERE `id` = $id";
@@ -221,25 +232,28 @@ class Order {
 
     public static function getPriceOfOrder($order_id){
         $db = connectDB();
-        $check2 = "SELECT `product_id` FROM `Ordered_product_list` WHERE `order_id` = '$order_id'";
+        $check2 = "SELECT * FROM `Ordered_product_list` WHERE `order_id` = '$order_id'";
         $checkResult2 = mysqli_query($db, $check2);
         $total_price = 0;
-    
+        $flag = true;
+
         while ($row = mysqli_fetch_assoc($checkResult2)){
-            $total_price += Product::getPricebyID($row['product_id']);
+            if(Product::checkIfInList($row['product_id'])){
+                $total_price += (Product::getPricebyID($row['product_id']) * $row['amount']);
+            }
         }
-    
+
         mysqli_free_result($checkResult2);
         mysqli_close($db);
         return $total_price;
     }
-    
+
     public static function getPriceArrayOfChart(){
         $db = connectDB();
         $check = "SELECT DISTINCT `order_id` FROM `Ordered_product_list`";
         $checkResult = mysqli_query($db, $check);
         $products = array(); // 初始化数组
-    
+
         while ($row = mysqli_fetch_assoc($checkResult)) {
             $order_id = $row['order_id'];
             $product = array(
@@ -249,28 +263,37 @@ class Order {
             );
             $products[] = $product;
         }
-    
+
         usort($products, array('self', 'compareDates'));
         mysqli_free_result($checkResult);
         mysqli_close($db);
         return $products;
     }
-    
+
 
     public static function getProductSalesArrayOfChart(){
         $db = connectDB();
-        for ($i = 0; $i < Product::getAmount();$i++){
-            $checkCount = "SELECT COUNT(*) AS TotalItems FROM `Ordered_product_list` WHERE `product_id` = '$i'";
+        for ($i = 0; $i < Product::getMax();$i++){
+            $count = 0;
+            $checkCount = "SELECT `amount` FROM `Ordered_product_list` WHERE `product_id` = '$i'";
             $result = mysqli_query($db,$checkCount);
-            $row = mysqli_fetch_assoc($result);
-            $count = $row['TotalItems'];
-            $product = array(
-                'id' => $i,
-                'num' => $count,
-                // 添加其他字段...
-            );
-            $products[] = $product;
-            mysqli_free_result($result);
+            if ($row = mysqli_fetch_assoc($result)) {
+                // 只有在 $row 不為 null 時才訪問 $row['amount']
+                $count = $row['amount'];
+                $name = Product::getNamebyID($i);
+
+                if ($name !== null){
+                    $product = array(
+                        'id' => $i,
+                        'num' => $count,
+                        'name' => Product::getNamebyID($i),
+                        // 添加其他字段...
+                    );
+                    $products[] = $product;
+                }
+                
+                mysqli_free_result($result);
+            }
         }
         mysqli_close($db);
         return $products;

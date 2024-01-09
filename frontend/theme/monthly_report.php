@@ -7,7 +7,6 @@ $num = Order::getProductSalesArrayOfChart();
 // 将数据转换为 JSON 格式
 $json_data = json_encode($data);
 $json_num = json_encode($num);
-
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +26,18 @@ $json_num = json_encode($num);
         }
 
         #totalPriceDisplay {
+            font-weight: bold;
+            color: #e44d26; /* 或者你喜欢的颜色 */
+        }
+        .total-item {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        #totalItem {
             font-weight: bold;
             color: #e44d26; /* 或者你喜欢的颜色 */
         }
@@ -57,7 +68,7 @@ $json_num = json_encode($num);
         .chart-container {
             width: 80%;
             margin: 20px auto;
-            background-color: #f5f7fa; 
+            background-color: #f5f7fa;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -69,6 +80,9 @@ $json_num = json_encode($num);
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            text-align: center;
+            width: 100%; /* 让其宽度为100% */
+            margin: 0 auto; /* 在水平方向上居中 */
         }
 
         .chart-container .month-selector button {
@@ -111,15 +125,14 @@ $json_num = json_encode($num);
                 <strong>總價:</strong><span id="totalPriceDisplay">0</span>
             </div>
         </div>
-        <!-- 月份選擇器 -->
+        <!-- 月份選擇器
         <div class="month-selector">
             <button onclick="adjustMonth(-1)">←</button>
             <div class="current-month">
                 <input type="hidden" id="monthRange" value="1">
-                <span id="displayMonth">1</span>
-            </div>  
-            <button onclick="adjustMonth(1)">→</button>
-        </div>
+                <span id="displayMonth">1月</span>
+            </div>
+        </div> -->
         <canvas id="lineChart1"></canvas>
     </div>
 
@@ -168,7 +181,7 @@ $json_num = json_encode($num);
         }
         // 将 PHP 中的 JSON 数据传递给 JavaScript
         var jsonData = <?php echo $json_data; ?>;
-        
+
         // 创建折线图
         var ctx1 = document.getElementById('lineChart1').getContext('2d');
         var lineChart1 = new Chart(ctx1, {
@@ -182,10 +195,22 @@ $json_num = json_encode($num);
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
                     fill: false
-                    
+
                 }]
             },
             options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '1月',
+                        font: {
+                            size: 24,
+                            weight: 'bold',
+                            family: 'Arial, sans-serif'
+                        },
+                        color: '#333'
+                    },
+                },
                 scales: {
                     x: {
                         title: {
@@ -202,11 +227,11 @@ $json_num = json_encode($num);
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text:"價錢", 
+                            text:"價錢",
                             font: {
                                 size: 36,
                                 weight: 'bold', // 加粗
-                                family: 'Arial, sans-serif' // 
+                                family: 'Arial, sans-serif' //
                             }
                         }
                     }
@@ -221,7 +246,13 @@ $json_num = json_encode($num);
     </script>
 
     <div class="chart-container container">
-        <h1 class="chart-header">各商品銷售數量</h1>
+        <div class="header-container">
+            <h1 class="chart-header">各商品銷售數量</h1>
+            <!-- 新增顯示價錢的文字元素 -->
+            <div class="total-item">
+                <strong>總數量:</strong><span id="totalItem">0</span>
+            </div>
+        </div>
         <canvas id="barChart"></canvas>
     </div>
 
@@ -273,6 +304,20 @@ $json_num = json_encode($num);
             }
         }
         });
+        document.addEventListener("DOMContentLoaded", function() {
+            // 在網頁載入時計算總和並更新顯示
+            updateTotalItem();
+        });
+        function updateTotalItem() {
+            var jsonDataa =jsonNum.map(item => item.num);  // 請確保 jsonData 包含要計算的數據
+            var totalitem = calculateTotalItem(jsonDataa);
+            document.getElementById('totalItem').textContent = totalitem;
+        }
+        function calculateTotalItem(data) {
+            var total_item = 0;
+            total_item = data.reduce((acc, val) => acc + parseInt(val), 0);
+            return total_item;
+        }
     </script>
 
 </body>

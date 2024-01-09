@@ -50,22 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
                         <div class="form-group">
                             <label for="price">商品價格：</label>
-                            <input type="number" id="price" name="price" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>商品類別：</label>
-                            <select id="productCategory" name="productCategory" class="form-control" required>
-                                <option value="家電類">家電類</option>
-                                <option value="食物類">食物類</option>
-                                <option value="衣物類">衣物類</option>
-                                <option value="其他">其他</option>
-                            </select>
+                            <input type="number" id="price" name="price" class="form-control" required min="0">
                         </div>
 
                         <div class="form-group">
                             <label for="description">商品描述：</label>
-                            <textarea id="description" name="description" class="form-control" required></textarea>
+                            <textarea id="description" name="description" class="form-control" required ></textarea>
                         </div>
 
                         <div class="form-group">

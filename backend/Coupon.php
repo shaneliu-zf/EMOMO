@@ -146,8 +146,9 @@ class Coupon{
         }
         else{
             $price *= $row['discount'];
+            $price /= 100;
         }
-        return $price;
+        return intval($price);
     }
 
     public static function checkIfCanUse($name,$total_price,$user_id){
@@ -182,7 +183,7 @@ class Coupon{
                 }
             }
         }
-        return $total_price;
+        return intval($total_price);
     }
 
 

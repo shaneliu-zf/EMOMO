@@ -61,7 +61,10 @@ class Product{
         $sql = "SELECT * FROM `Product_list` WHERE `product_id` = $id";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_assoc($result);
-        $name = $row['name'];
+        $name = NULL;
+        if(self::checkIfInList($id)){
+            $name = $row['name'];
+        }
         mysqli_free_result($result);
         mysqli_close($db);
         return $name;
@@ -72,7 +75,12 @@ class Product{
         $sql = "SELECT * FROM `Product_list` WHERE `product_id` = $id";
         $result = mysqli_query($db,$sql);
         $row = mysqli_fetch_assoc($result);
-        $price = $row['price'];
+        if(self::checkIfInList($id)){
+            $price = $row['price'];
+        }
+        else{
+            $price = 0;
+        }
         mysqli_free_result($result);
         mysqli_close($db);
         return $price;
@@ -109,6 +117,33 @@ class Product{
         mysqli_free_result($checkCountResult);
         mysqli_close($db);
         return $count;
+    }
+
+    public static function getMax(){
+        $db = connectDB();
+        $checkCount = "SELECT Max(`product_id`) AS MaxNum FROM `Product_list`;";
+        $checkCountResult = mysqli_query($db,$checkCount);
+        $row = mysqli_fetch_assoc($checkCountResult);
+        $Max = $row['MaxNum'];
+        mysqli_free_result($checkCountResult);
+        mysqli_close($db);
+        return $Max;
+    }
+
+    public static function checkIfInList($id){
+        $db = connectDB();
+        $checkCount = "SELECT COUNT(*) AS Num FROM `Product_list` WHERE `product_id` = '$id';";
+        $checkCountResult = mysqli_query($db,$checkCount);
+        $row = mysqli_fetch_assoc($checkCountResult);
+        $Num = $row['Num'];
+        mysqli_free_result($checkCountResult);
+        mysqli_close($db);
+        if($Num == 0){
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     public static function getAll(){

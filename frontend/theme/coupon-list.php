@@ -135,9 +135,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
 <div class="container">
     <div class="search-box">
-        <input type="text" id="couponSearch" placeholder="Search by coupon name...">
-        <button class="search-btn" onclick="searchCoupons()">Search</button>
-        <button class="add-btn" onclick="redirectToAddCoupon()">新增優惠卷</button>
+        <!-- <input type="text" id="couponSearch" placeholder="Search by coupon name...">
+        <button class="search-btn" onclick="searchCoupons()">Search</button> -->
+        <?php
+        if (isset($_COOKIE['user_id'])){
+            if(User::isAdmin($_COOKIE['user_id']) || User::isStaff($_COOKIE['user_id'])){
+                echo '<button class="add-btn" onclick="redirectToAddCoupon()">新增優惠卷</button>';
+            }
+        }
+        ?>
     </div>
 </div>
 <section class="coupon-section">
@@ -175,7 +181,7 @@ if ($result->num_rows > 0) {
                 <div class='coupon-item'>
                     <h3>$name</h3>
                     <p>購物$text1";
-        echo "可享額外$text2"; 
+        echo "可享額外$text2";
         echo "折扣。</p><span class='coupon-code'>$code</span><br/><span class='coupon-date'>截止日期：$date</span>";
         if($today <= $date){
             echo "<form action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "' method='post'>
@@ -188,7 +194,7 @@ if ($result->num_rows > 0) {
         else{
             echo "<a class='expired-link' id='expired-link' style='color: red;'>無法使用，已逾期</a>";
         }
-        echo "</div></div>";    
+        echo "</div></div>";
     }
 }
 

@@ -22,32 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Order::changeStatus($id,$newStatus);
             $response = ['status' => 'success'];
             echo json_encode($response);
-        } 
-		else if ($action === 'detail') {
-            // 獲取 POST 數據
-			$orderId = $_POST['orderId'];
-			$user_id = $_COOKIE['user_id'];
-			$itemDetails = array();
-			$address = Order::getAddressbyID($orderId);
-			$Items = Order::getOrderitems($id, $user_id);
-			while ($row = mysqli_fetch_row($Items)) {
-				$name = Product::getNamebyID($row[3]);
-				$amount = Order::getOrderSingleItemsCount($id, $user_id, $row[3]);
-				$price = Product::getpricebyID($row[3]);
-			
-				$itemDetails[] = array(
-					'name' => $name,
-					'amount' => $amount,
-					'price' => $price
-				);
-			}
-			$responseData = array(
-				'status' => 'success',
-				'address' => $address,
-				'itemDetails' => $itemDetails
-			);
-			echo json_encode($responseData);
-        } 
+        }  
         else{
             http_response_code(400);
             echo 'Bad Request';
@@ -172,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 											echo "<td><span id='status$id' class='label label-$color'>$status</span></td>";
 											echo "<td>";
 											if(User::isAdmin($_COOKIE['user_id']) || User::isStaff($_COOKIE['user_id'])){
-												echo "<a class='btn btn-default' onclick='openModalAndChangeStatus(status$id)'><i class='fa-solid fa-clipboard-list fa-lg'></i></a>";
+												echo "<a href='javascript:void(0);' class='btn btn-default' onclick='openModalAndChangeStatus(status$id,this)'><i class='fa-solid fa-clipboard-list fa-lg'></i></a>";
 											}
 											echo "<a href='javascript:void(0);' class='btn btn-default' onclick='showOrderDetails(this)'>View</a>";
 											echo "</td>";
@@ -228,9 +203,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
 	var orderId;
 
-	function openModalAndChangeStatus(statusId) {
+	function openModalAndChangeStatus(statusId,button) {
         // 使用 Bootstrap 的方法显示模态框
         $('#myModal').modal('show');
+		var $tr = $(button).closest('tr');
+
+        // 獲取該行的 Order ID
+        orderId = $tr.find('td:eq(0)').text();
 
         // 存储当前订单状态标签的id
         currentStatusId = statusId;
@@ -238,8 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 获取当前订单状态标签的文字
         var currentStatusText = document.getElementById(statusId).innerText;
 
-		var orderId = $tr.find('td:eq(0)').text();
-
+		
         // 设置下拉菜单选中项为当前状态文字
         document.getElementById('statusSelect').value = currentStatusText;
     }
@@ -251,6 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	function updateStatus() {
         var status = document.getElementById('statusSelect').options[document.getElementById('statusSelect').selectedIndex].text;
+		
 
 		$.ajax({
                 type: 'POST',
@@ -278,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         var $tr = $(button).closest('tr');
 
         // 獲取該行的 Order ID
-        var orderId = $tr.find('td:eq(0)').text();
+        orderId = $tr.find('td:eq(0)').text();
         var orderData = {
             orderId: orderId,
             order_date: $tr.find('td:eq(1)').text(),
@@ -291,12 +270,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			type: 'POST',
 			url: 'Handle_order_item.php',
 			data: {
-				orderId: orderId,
-				user_id: <?php echo json_encode($_COOKIE['user_id']) ?>
+				orderId: orderId
 			},
 			success: function(response) {
 				var responseData = JSON.parse(response);
-
+				console.log(responseData);
 				// 檢查是否已存在相同的模態框，如果存在則刪除
 				$('#orderDetailsModal').remove();
 

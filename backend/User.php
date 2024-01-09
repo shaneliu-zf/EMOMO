@@ -23,7 +23,7 @@ class User{
         $user_type = strtolower($user_type);
         $this->user_type = $user_type;
         $checkQuery = "SELECT COUNT(*) as count FROM `User_list` WHERE `email` = '$email'";
-        $checkCount = "SELECT COUNT(*) AS TotalItems FROM `User_list`";
+        $checkCount = "SELECT MAX(user_id)+1 AS TotalItems FROM `User_list`";
         $checkCountResult = mysqli_query($db,$checkCount);
         $row = mysqli_fetch_assoc($checkCountResult);
         $count = $row['TotalItems'];
@@ -32,7 +32,7 @@ class User{
         if ($getfinalNumber) {
             $row = mysqli_fetch_assoc($getfinalNumber);
             $final = $row['user_id'];
-        } 
+        }
         else {
             echo "Error: " . mysqli_error($db);
         }
@@ -51,17 +51,17 @@ class User{
                             LIMIT 1";
 
             $getMissNumber = mysqli_query($db, $missNumber);
-            
+
             if ($getMissNumber) {
                 // 檢查結果集是否存在
                 if ($row = mysqli_fetch_assoc($getMissNumber)) {
                     $miss = $row['missing_id'];
                     $this->user_id = $miss;
-                } 
+                }
                 else {
                     echo "No missing number found.";
                 }
-            } 
+            }
             else {
                 // 處理 mysqli_query 失敗的情況
                 echo "Error: " . mysqli_error($db);
@@ -89,7 +89,7 @@ class User{
                     $insertResult2 = mysqli_query($db, $insertQuery2);
                 }
                 $insertResult = mysqli_query($db, $insertQuery);
-                
+
             }
             else{
                 $this->isRegistered = true;
@@ -129,7 +129,7 @@ class User{
                         `address` = '$address'
                         WHERE `user_id` = '$user_id'";
 
-        $result = mysqli_query($db, $updateQuery);  
+        $result = mysqli_query($db, $updateQuery);
 
         // 關閉資料庫連接
         mysqli_close($db);
@@ -191,8 +191,15 @@ class User{
         return $address;
     }
 
-    public function getUserType(){
-        return $this->user_type;
+    public function getUserType($id){
+        $db = connectDB();
+        $sql = "SELECT * FROM `User_list` WHERE `user_id` = $id";
+        $result = mysqli_query($db,$sql);
+        $row = mysqli_fetch_assoc($result);
+        $address = $row['usertype'];
+        mysqli_free_result($result);
+        mysqli_close($db);
+        return $address;
     }
 
     public static function isAdmin($id){
@@ -210,6 +217,14 @@ class User{
             mysqli_close($db);
             return true;
         }
+    }
+
+    public function getIdList(){
+        $db = connectDB();
+        $sql = "SELECT `user_id` FROM `User_list`";
+        $result = mysqli_query($db,$sql);
+        mysqli_close($db);
+        return $result;
     }
 
     public static function isStaff($id){
@@ -234,7 +249,7 @@ class User{
         $this->$image = $image;
         $updateQuery = "UPDATE `User_list` SET `image` = '$image' WHERE `user_id` = '$user_id'";
 
-        $result = mysqli_query($db, $updateQuery);  
+        $result = mysqli_query($db, $updateQuery);
 
         // 關閉資料庫連接
         mysqli_close($db);

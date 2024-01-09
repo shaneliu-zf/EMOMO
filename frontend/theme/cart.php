@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $NewOrder = new Order($address, $user_id, 'NULL');
       }
       $order_id = Order::getCount() - 1;
-  
+
       while($row=mysqli_fetch_row($Result)){
         $product_id = $row[1];
         if($NewOrder->isExist($order_id, $user_id, $product_id)){
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
       }
       $NewCart->removeAll($user_id);
-      setcookie($coupon, '', time() - 3600, '/');
+      
       echo "<script>alert('結帳成功');</script>";
     }
     else{
@@ -85,9 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <thead>
                     <tr>
                       <th class="">商品名稱</th>
-
+                      <th class="">數量</th>
                       <th class="">價格</th>
-                    
+
                     </tr>
                   </thead>
                   <tbody>
@@ -96,14 +96,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                   error_reporting(E_ALL);
                   include_once "../../backend/ShoppingCart.php";
                   include_once "../../backend/Coupon.php";
+                  include_once "../../backend/Product.php";
                   $NewCart = New ShoppingCart();
-                  $number = $NewCart->getNumInProduct();
+                  $number = Product::getMax();
                   if(isset($_COOKIE['user_id'])) {
                     // 獲取 user_id
                     $user_id = $_COOKIE['user_id'];
                     }
                   $total_price = 0;
-                  for ($i = 0;$i < $number;$i++){
+                  for ($i = 0;$i < $number+1;$i++){
                     $count = $NewCart->checkIfInCart($user_id,$i);
                     if($count != 0){
                         $name = $NewCart->getProductName($i);
@@ -116,14 +117,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         echo "<td class=''>";
                         echo "<div class='product-info'>";
                         echo "<img width='80' src=$image alt='' />";
-                        echo " <a href='#!'>$name x $count</a>";
+                        echo " <a href='#!'>$name</a>";
                         echo "</div>";
                         echo "</td>";
+                        echo "<td class=''>&nbsp;$count</td>";
                         echo "<td class=''>$price</td>";
                         echo "<td class=''>";
                         echo "<input type='hidden' name='user_id' value=' $user_id'>";
                         echo "<input type='hidden' name='product_id' value='$i'>";
-                        echo "<button type='submit' class='product-remove'>移除</button>";
+                        echo "<button type='submit' class='btn btn-danger'>移除</button>";
                         echo "</td>";
                         echo "</tr>";
                         echo "</form>";
@@ -152,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                           .original-price {
                             position: relative;
                           }
-                      
+
                           .original-price::after {
                             content: '';
                             position: absolute;
@@ -164,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             transform: translateY(-50%);
                             z-index: 1;
                           }
-                      
+
                           .original-price::before {
                             content: '';
                             position: absolute;
@@ -174,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             background-color: white;
                             padding: 0 5px;
                           }
-                      
+
                           .new-price {
                             position: relative;
                             z-index: 3;
@@ -193,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                           </div>
                       </div>";
                   ?>
- 
+
               </form>
             </div>
           </div>
@@ -213,6 +215,7 @@ $(window).on('beforeunload', function() {
         data: {cookie_name: 'coupon'},  // 替换为实际的 cookie 名称
     });
 });
+
 </script>
 
 </body>

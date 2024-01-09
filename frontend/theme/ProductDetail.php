@@ -40,7 +40,7 @@ $description = Product::getDescriptionbyID($id);
 echo "<section class='$id'><div class='container'><div class='row mt-20'><div class='col-md-5'><div class='$id-slider'>";
 echo "<div id='carousel-custom' class='carousel slide' data-ride='carousel'><div class='carousel-outer'><!-- me art lab slider -->";
 echo "<div class='carousel-inner '><div class='item active'>";
-echo "<img src='$image' alt='圖片無法正常顯示' /></div></div></div>";
+echo "<img src='$image'style='width: 450px; height: 450px;' alt='圖片無法正常顯示' /></div></div></div>";
 echo "<!-- thumb --></div></div></div>";
 echo "<div class='col-md-7'><div class='$id-details'><h2>$name</h2><p class='product-price'>$$price</p><p class='product-description mt-20'>";
 echo "<ul>$description</ul></p>";

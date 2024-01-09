@@ -64,10 +64,10 @@ class Admin extends Staff{
         $sql = "DELETE FROM `Staff_list` WHERE `user_id`= $user_id;";
         $sql2 = "DELETE FROM `User_list` WHERE `user_id`= $user_id;";
 
-        
+
         // 用mysqli_query方法執行(sql語法)將結果存在變數中
         mysqli_query($db,$sql);
         mysqli_query($db,$sql2);
-        mysqli_close($db); 
+        mysqli_close($db);
     }
 }
