@@ -4,6 +4,11 @@ error_reporting(E_ALL);
 require_once "header.php";
 require_once "../../backend/Coupon.php";
 
+if(!isset($_COOKIE['user_id']) || !(User::isStaff($_COOKIE['user_id']) || User::isAdmin($_COOKIE['user_id']))){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
   $name = $_POST['couponName'];
   $code = $_POST['couponCode'];
@@ -104,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 </head>
 
 <body id="body">
-    
+
 	<section class="add-coupon">
 		<div class="container">
 			<div class="row">
@@ -114,27 +119,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 					<form id="couponForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 						<label for="couponName">優惠卷名字:</label>
 						<input type="text" id="couponName" name="couponName" required>
-	
+
 						<label for="couponCode">優惠碼:</label>
 						<input type="text" id="couponCode" name="couponCode" required>
-	
+
 						<label for="discountType">折扣方式:</label>
 						<select id="discountType" name="discountType" required>
 							<option value="">選擇折扣方式</option>
 							<option value="minus">金額</option>
 							<option value="percent">百分比數</option>
 						</select>
-	
+
 						<label for="discountAmount">金額或%數:</label>
 						<input type="text" id="discountAmount" name="discountAmount" placeholder="請輸入金額或%數" required>
-	
+
 						<label for="rule">使用規則</label>
 						<select id="rule" name="rule" required>
 							<option value="">選擇使用規則</option>
 							<option value="sum">滿額折扣</option>
 							<option value="amount">數量達標</option>
 						</select>
-	
+
 						<label for="minimumAmount">需達金額</label>
 						<input type="text" id="minimumAmount" name="minimumAmount" pattern="[0-9]+" title="請輸入整數" placeholder="請輸入需達金額" required>
 						<div id="error-msg">請輸入整數</div>
@@ -153,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
 						<label for="expiryDate">截止日期:</label>
 						<input type="date" id="expiryDate" name="expiryDate" required>
-	
+
 						<button type="submit">新增優惠卷</button>
 					</form>
 				</div>
@@ -161,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			</div>
 		</div>
 	</section>
-	
+
   </body>
   </html>
 

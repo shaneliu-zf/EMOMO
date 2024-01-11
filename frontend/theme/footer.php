@@ -5,7 +5,7 @@
 			<div class="col-md-12">
 				<ul class="social-media">
 					<li>
-						<a href="https://github.com/CoreXing/Emomo_Frontend">
+						<a href="https://github.com/SiQunChen/EMOMO/tree/jerry">
 							<i class="tf-ion-social-github"></i>
 						</a>
 					</li>

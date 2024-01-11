@@ -4,6 +4,11 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 include_once "../../backend/Admin.php";
 
+if(!isset($_COOKIE['user_id']) || !User::isAdmin($_COOKIE['user_id'])){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 $NewAdmin = new Admin();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -51,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         </div>
     </div>
 
-	<?php 
+	<?php
 	ini_set('display_errors','1');
 	error_reporting(E_ALL);
 	include_once "../../backend/Admin.php";
@@ -59,14 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	$result = $Newadmin->getStaffId();
 	if ($result->num_rows > 0) {
         $searchQuery = isset($_POST['searchEmployee']) ? $_POST['searchEmployee'] : ''; // 从搜索框中获取搜索条件
-    
+
         while($row = $result->fetch_assoc()) {
             $id = $row["user_id"];
             $name = $Newadmin->getStaffName($id);
             $address = $Newadmin->getStaffAddress($id);
             $email = $Newadmin->getStaffemail($id);
             $image = $Newadmin->getStaffimage($id);
-    
+
             // 在这里检查是否符合搜索条件
             if (empty($searchQuery) || stripos($name, $searchQuery) !== false) {
                 // 符合搜索条件或搜索条件为空时显示
@@ -97,9 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
         }
     }
-	
-	
-	
+
+
+
 	?>
 </section>
 
@@ -108,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         const searchQuery = document.getElementById('searchEmployee').value.toLowerCase();
         // 遍歷 user-profile-list 中的項目，根據搜尋查詢顯示/隱藏
         const userListItems = document.querySelectorAll('.user-profile-list li#userName');
-        
+
         userListItems.forEach(item => {
             const userName = item.textContent.toLowerCase();
             const parentDiv = item.closest('.container'); // 找到最近的包裝容器
@@ -119,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
         });
     }
-	
+
     function addNewEmployee() {
         window.location.href = "add-employee.php";
     }

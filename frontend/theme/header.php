@@ -189,6 +189,7 @@
 									if (isset($_COOKIE['user_id'])){
                                         echo "<li><a href='/order.php'>我的訂單</a></li>";
                                         echo "<li><a href='/cart.php'>購物車</a></li>";
+										echo "<li><a href='/coupon-list.php'>優惠卷列表</a></li>";
 										echo "<li><a href='/personal.php'>會員資料</a></li>";
 									}
 									else{
@@ -215,7 +216,6 @@
 							echo "<ul>";
 							echo "<li><a href='/add-product.php'>新增商品</a></li>";
 							echo "<li><a href='/add-coupon.php'>新增優惠券</a></li>";
-                            echo "<li><a href='/coupon-list.php'>優惠卷列表</a></li>";
 							echo "<li><a href='/feedback.php'>用戶回饋</a></li>";
 							echo "</ul>";
 							echo "</div><!-- / .dropdown-menu -->";

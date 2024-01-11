@@ -4,6 +4,11 @@ include_once "../../backend/Order.php";
 $data = Order::getPriceArrayOfChart();
 $num = Order::getProductSalesArrayOfChart();
 
+if(!isset($_COOKIE['user_id']) || !User::isAdmin($_COOKIE['user_id'])){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 // 将数据转换为 JSON 格式
 $json_data = json_encode($data);
 $json_num = json_encode($num);

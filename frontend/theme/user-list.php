@@ -4,6 +4,11 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 include_once "../../backend/Admin.php";
 
+if(!isset($_COOKIE['user_id']) || !User::isAdmin($_COOKIE['user_id'])){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 $NewAdmin = new Admin();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -38,12 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	<div class="container">
         <div class="row">
             <div class="col-md-6"> <!-- 調整為 col-md-6，使搜尋框顯示在左邊 -->
-            <div class="mt-3">
-                <div class="custom-input-group">
-                    <input type="text" class="form-control" placeholder="搜尋帳號" id="searchEmployee">
-                    <button class="btn btn-outline-primary" type="button" onclick="searchEmployee()">搜尋</button>
+                <div class="mt-3">
+                    <div class="custom-input-group">
+                        <input type="text" class="form-control" placeholder="搜尋帳號" id="searchEmployee">
+                        <button class="btn btn-outline-primary" type="button" onclick="searchEmployee()">搜尋</button>
+                    </div>
                 </div>
-            </div>
             </div>
             <!--<div class="col-md-6 text-right mt-3">  新增一半的欄位給搜尋框，使新增員工按鈕顯示在右邊
                 <button class="btn btn-primary" onclick="addNewEmployee()">新增員工</button>
@@ -82,10 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 echo "<ul class='user-profile-list' id='userProfileList'>";
                 $user_type = $NewUser->getUserType($id);
                 if($user_type=="customer"){
-                    echo "<li class='h3'><strong>顧客: </strong>$name</li>";
+                    echo "<li class='h3' id='userName'><strong>顧客: </strong>$name</li>";
                 }
                 if($user_type=="staff"){
-                    echo "<li class='h3'><strong>員工: </strong>$name</li>";
+                    echo "<li class='h3' id='userName'><strong>員工: </strong>$name</li>";
                 }
                 if($user_type=="admin"){
                     echo "<li class='h3' id='userName'><strong>主管: </strong>$name</li>";

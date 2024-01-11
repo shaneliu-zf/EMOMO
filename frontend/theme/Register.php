@@ -55,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
             </div>
           </form>
           <p class="mt-20">已經有帳號了嗎 ?<a href="login.php"> 登入</a></p>
-          <p><a href="forget-password.php"> 忘記密碼?</a></p>
         </div>
       </div>
     </div>

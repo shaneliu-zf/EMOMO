@@ -5,6 +5,11 @@ error_reporting(E_ALL);
 require_once "header.php";
 require_once "../../backend/Coupon.php";
 
+if(!isset($_COOKIE['user_id'])){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
   $code = $_POST['code'];
   setcookie("coupon", $code, 0, "/");

@@ -4,6 +4,11 @@ error_reporting(E_ALL);
 require_once "header.php";
 require_once "../../backend/User.php";
 
+if(!isset($_COOKIE['user_id']) || !User::isAdmin($_COOKIE['user_id'])){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
   $name = $_POST['name'];
   $email = $_POST['email'];

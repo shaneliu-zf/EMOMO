@@ -5,6 +5,11 @@ error_reporting(E_ALL);
 include_once "../../backend/ShoppingCart.php";
 include_once "../../backend/Order.php";
 
+if(!isset($_COOKIE['user_id'])){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
   if(isset($_POST['checkout'])){
     $NewCart = new ShoppingCart();
@@ -31,8 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
       }
       $NewCart->removeAll($user_id);
-      
+
       echo "<script>alert('結帳成功');</script>";
+      echo "<script>window.location.href = '/order.php';</script>";
     }
     else{
       echo "<script>alert('結帳失敗');</script>";

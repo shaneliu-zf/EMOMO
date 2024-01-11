@@ -1,4 +1,13 @@
-<?php include_once "header.php"; ?>
+<?php
+require_once "header.php";
+require_once "../../backend/User.php";
+
+if(!isset($_COOKIE['user_id']) || !(User::isStaff($_COOKIE['user_id']) || User::isAdmin($_COOKIE['user_id']))){
+    echo '<meta http-equiv="refresh" content="0;url=login.php">';
+    die();
+}
+?>
+
 <!DOCTYPE html>
 
 
@@ -54,7 +63,7 @@
                                     <td>$date</td>
                                     <td>$suggestion</td>
                                     </tr>";
-                                    
+
                                 }
                                 ?>
                             </tbody>

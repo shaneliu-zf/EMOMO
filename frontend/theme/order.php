@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Order::changeStatus($id,$newStatus);
             $response = ['status' => 'success'];
             echo json_encode($response);
-        }  
+        }
         else{
             http_response_code(400);
             echo 'Bad Request';
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<div class="col-md-12">
 				<!-- 分頁控制元件 -->
 				<div id="pagination" class="text-center mb-3"></div>
-				
+
 				<!-- 表格 -->
 				<div class="dashboard-wrapper user-dashboard">
 					<div class="table-responsive">
@@ -217,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 获取当前订单状态标签的文字
         var currentStatusText = document.getElementById(statusId).innerText;
 
-		
+
         // 设置下拉菜单选中项为当前状态文字
         document.getElementById('statusSelect').value = currentStatusText;
     }
@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	function updateStatus() {
         var status = document.getElementById('statusSelect').options[document.getElementById('statusSelect').selectedIndex].text;
-		
+
 
 		$.ajax({
                 type: 'POST',
@@ -251,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 关闭模态框
         closeModal();
     }
-	
+
     function showOrderDetails(button) {
         // 獲取該行(tr)的資料
         var $tr = $(button).closest('tr');
@@ -284,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Order Details - ${responseData[0].orderId}</h5>
+									<h5 class="modal-title" id="exampleModalLabel">Order Details - ${orderData.orderId}</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
