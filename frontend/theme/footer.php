@@ -5,7 +5,7 @@
 			<div class="col-md-12">
 				<ul class="social-media">
 					<li>
-						<a href="https://github.com/SiQunChen/EMOMO/tree/jerry">
+						<a href="https://github.com/shaneliu-zf/EMOMO">
 							<i class="tf-ion-social-github"></i>
 						</a>
 					</li>
@@ -25,10 +25,10 @@
 	</div>
 </footer>
 
-    <!-- 
+    <!--
     Essential Scripts
     =====================================-->
-    
+
     <!-- Main jQuery -->
     <script src="plugins/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 3.1 -->
@@ -52,7 +52,7 @@
 
     <!-- Main Js File -->
     <script src="js/script.js"></script>
-    
+
 
 
   </body>
